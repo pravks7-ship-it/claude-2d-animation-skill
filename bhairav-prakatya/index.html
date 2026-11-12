@@ -1,0 +1,1112 @@
+<title>भैरव का प्राकट्य</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tiro+Devanagari+Hindi&family=Mukta:wght@400;600;700&display=swap">
+<style>
+/* Layout: one cinema screen (16:9 stage with letterbox bars) over a slim transport bar; single dark "temple at dusk" look. */
+:root {
+  --ink: #140b11;          /* page ground, plum-black */
+  --ink-2: #22141d;        /* control surface */
+  --ash: #f1e6d6;          /* primary text, vibhuti ash */
+  --ash-dim: #b9a796;      /* secondary text */
+  --ember: #ff9b4e;        /* accent, agni */
+  --gold: #e8c27b;         /* gilt highlights */
+  --sindoor: #d2402f;      /* krodha / warning */
+  --tulsi: #8fcf8a;        /* affirmative mark */
+  --font-display: "Tiro Devanagari Hindi", "Noto Serif Devanagari", "Kohinoor Devanagari", serif;
+  --font-body: "Mukta", "Noto Sans Devanagari", "Nirmala UI", system-ui, sans-serif;
+  color-scheme: dark;
+}
+html, body { height: 100%; }
+[hidden] { display: none !important; }
+body {
+  background: var(--ink); color: var(--ash); font-family: var(--font-body);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 12px; box-sizing: border-box; overflow-x: hidden;
+}
+.player { width: min(100%, calc((100dvh - 110px) * 16 / 9)); max-width: 1600px; display: flex; flex-direction: column; gap: 10px; }
+.player:fullscreen { width: 100%; height: 100%; justify-content: center; background: var(--ink); padding: 0 16px; box-sizing: border-box; }
+.stage { position: relative; width: 100%; max-width: 100%; aspect-ratio: 16 / 9; overflow: hidden; border-radius: 6px; background: #000; container-type: inline-size; isolation: isolate; }
+.stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.bar { position: absolute; left: 0; right: 0; height: 8.5%; background: #000; z-index: 3; pointer-events: none; }
+.bar.top { top: 0; } .bar.bot { bottom: 0; }
+.layer { position: absolute; inset: 0; z-index: 4; pointer-events: none; }
+.flash { position: absolute; inset: 0; z-index: 5; background: #fff6e8; opacity: 0; pointer-events: none; mix-blend-mode: screen; }
+
+.chapter { position: absolute; top: 2.1cqw; left: 3cqw; font-size: 1.15cqw; letter-spacing: .14em; color: var(--gold); opacity: .85; text-shadow: 0 1px 4px #000; z-index: 6; }
+.chapter b { color: var(--ash); font-weight: 600; letter-spacing: .06em; }
+
+.sub { position: absolute; left: 8%; right: 8%; bottom: 10.5%; text-align: center; z-index: 6; transition: opacity .45s ease; }
+.speaker { display: inline-block; font-size: 1.15cqw; letter-spacing: .16em; color: var(--ink); background: var(--gold); padding: .15em .8em .05em; border-radius: 2px; margin-bottom: .6cqw; font-weight: 700; }
+.speaker[data-tone="krodha"] { background: var(--sindoor); color: var(--ash); }
+.line { font-family: var(--font-display); font-size: 2.45cqw; line-height: 1.45; color: var(--ash); text-wrap: balance;
+  text-shadow: 0 2px 10px rgba(0,0,0,.95), 0 0 2px rgba(0,0,0,.9); }
+.line em { font-style: normal; color: var(--gold); }
+
+.title-card { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1cqw; z-index: 6; text-align: center; opacity: 0; }
+.title-card .eyebrow { font-size: 1.4cqw; letter-spacing: .4em; color: var(--gold); }
+.title-card h1 { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: 8cqw; line-height: 1.1; color: var(--ash);
+  text-shadow: 0 0 3cqw rgba(255,140,60,.55), 0 4px 18px rgba(0,0,0,.9); }
+.title-card .rule { width: 18cqw; height: 1px; background: linear-gradient(90deg, transparent, var(--gold), transparent); }
+
+.name-flash { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 6; opacity: 0;
+  font-family: var(--font-display); font-size: 17cqw; color: #ffd9a8; letter-spacing: .05em;
+  text-shadow: 0 0 4cqw rgba(255,70,20,.9), 0 0 1cqw rgba(255,200,120,.9); }
+
+.verdicts { position: absolute; right: 4cqw; top: 15%; width: 30cqw; display: flex; flex-direction: column; gap: 1.1cqw; z-index: 6; }
+.verdict { display: grid; grid-template-columns: 3.4cqw 1fr; gap: 1.1cqw; align-items: center; padding: 1.1cqw 1.4cqw;
+  background: rgba(20,11,17,.72); border: 1px solid rgba(232,194,123,.35); border-radius: 4px; backdrop-filter: blur(6px);
+  opacity: 0; transform: translateX(3cqw); transition: opacity .6s ease, transform .6s ease; }
+.verdict.on { opacity: 1; transform: none; }
+.verdict svg { width: 3.4cqw; height: 3.4cqw; }
+.verdict .k { font-size: 1cqw; letter-spacing: .18em; color: var(--ash-dim); }
+.verdict .v { font-family: var(--font-display); font-size: 1.75cqw; line-height: 1.3; color: var(--ash); min-width: 0; }
+
+.place { position: absolute; left: 4cqw; top: 15%; display: flex; gap: 1cqw; align-items: center; z-index: 6; opacity: 0; transition: opacity .7s ease; }
+.place.on { opacity: 1; }
+.place svg { width: 3cqw; height: 3cqw; flex: none; }
+.place .k { font-size: 1.05cqw; letter-spacing: .2em; color: var(--gold); }
+.place .v { font-family: var(--font-display); font-size: 2.6cqw; color: var(--ash); line-height: 1.15; text-shadow: 0 2px 10px #000; }
+
+.end-card { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.4cqw; z-index: 6; opacity: 0; text-align: center; }
+.end-card .next { font-size: 1.4cqw; letter-spacing: .3em; color: var(--gold); }
+.end-card .hh { font-family: var(--font-display); font-size: 7.5cqw; color: var(--ash); text-shadow: 0 0 3cqw rgba(255,120,40,.6), 0 4px 18px #000; }
+.end-card svg { width: 5cqw; height: 7cqw; }
+
+.poster { position: absolute; inset: 0; z-index: 8; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.6cqw;
+  background: radial-gradient(ellipse at 50% 60%, rgba(20,11,17,.15), rgba(20,11,17,.78)); text-align: center; }
+.poster .eyebrow { font-size: 1.5cqw; letter-spacing: .4em; color: var(--gold); }
+.poster h2 { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: 7cqw; line-height: 1.1; text-shadow: 0 0 3cqw rgba(255,140,60,.5), 0 4px 16px #000; }
+.poster p { margin: 0; font-size: 1.5cqw; color: var(--ash-dim); max-width: 50cqw; }
+.bigplay { pointer-events: auto; display: inline-flex; align-items: center; gap: .8cqw; font: 600 1.9cqw var(--font-body); color: var(--ink);
+  background: var(--ember); border: 0; border-radius: 999px; padding: 1cqw 2.8cqw 0.8cqw 2.2cqw; cursor: pointer; box-shadow: 0 0 3cqw rgba(255,140,60,.45); }
+.bigplay:hover { background: var(--gold); }
+.bigplay:focus-visible, .ctl button:focus-visible, .track:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+.bigplay svg { width: 1.9cqw; height: 1.9cqw; }
+
+.ctl { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-size: 14px; color: var(--ash-dim); }
+.ctl button { display: inline-flex; align-items: center; gap: 6px; background: var(--ink-2); color: var(--ash); border: 1px solid rgba(232,194,123,.22);
+  border-radius: 999px; padding: 6px 12px; font: 600 13px var(--font-body); cursor: pointer; }
+.ctl button:hover { border-color: var(--gold); }
+.ctl button[aria-pressed="false"] { color: var(--ash-dim); text-decoration: line-through; text-decoration-color: rgba(185,167,150,.6); }
+.ctl svg { width: 14px; height: 14px; }
+.track { position: relative; flex: 1 1 240px; min-width: 0; height: 22px; cursor: pointer; display: flex; align-items: center; }
+.track .rail { position: absolute; left: 0; right: 0; height: 4px; background: rgba(241,230,214,.14); border-radius: 2px; }
+.track .fill { position: absolute; left: 0; height: 4px; width: 0; background: linear-gradient(90deg, var(--gold), var(--ember)); border-radius: 2px; }
+.track .tick { position: absolute; width: 1px; height: 10px; background: rgba(241,230,214,.3); }
+.time { font-variant-numeric: tabular-nums; min-width: 92px; }
+.voice-note { font-size: 12px; color: var(--ash-dim); }
+@media (max-width: 560px) { .voice-note { display: none; } .ctl { gap: 8px; } }
+@media (prefers-reduced-motion: reduce) { .verdict, .place, .sub { transition: none; } }
+</style>
+
+<div class="player" id="player">
+  <div class="stage" id="stage">
+    <canvas id="gl"></canvas>
+    <div class="bar top"></div><div class="bar bot"></div>
+    <div class="flash" id="flash"></div>
+    <div class="chapter" id="chapter">शिव महापुराण · <b>भैरव का प्राकट्य</b></div>
+
+    <div class="title-card" id="titleCard">
+      <div class="eyebrow">शिव महापुराण की कथा</div>
+      <h1>भैरव का प्राकट्य</h1>
+      <div class="rule"></div>
+    </div>
+
+    <div class="name-flash" id="nameFlash">भैरव</div>
+
+    <div class="verdicts" id="verdicts">
+      <div class="verdict" id="v1">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18" fill="none" stroke="#d2402f" stroke-width="2.5"/><path d="M13 13 L27 27 M27 13 L13 27" stroke="#d2402f" stroke-width="3" stroke-linecap="round"/></svg>
+        <div><div class="k">दंड · ब्रह्मा</div><div class="v">ब्रह्मा जी की अलग से पूजा नहीं होगी</div></div>
+      </div>
+      <div class="verdict" id="v2">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18" fill="none" stroke="#d2402f" stroke-width="2.5"/><path d="M13 13 L27 27 M27 13 L13 27" stroke="#d2402f" stroke-width="3" stroke-linecap="round"/></svg>
+        <div><div class="k">दंड · केतकी</div><div class="v">केतकी शिव-पूजा में कभी नहीं चढ़ेगी</div></div>
+      </div>
+      <div class="verdict" id="v3">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18" fill="none" stroke="#8fcf8a" stroke-width="2.5"/><path d="M12 21 L18 27 L29 14" fill="none" stroke="#8fcf8a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div><div class="k">वरदान · ब्रह्मा</div><div class="v">यज्ञों में ब्रह्मा जी का स्थान सदा रहेगा</div></div>
+      </div>
+    </div>
+
+    <div class="place" id="place">
+      <svg viewBox="0 0 30 40" aria-hidden="true"><path d="M15 2 C7 2 2 8 2 15 C2 25 15 38 15 38 C15 38 28 25 28 15 C28 8 23 2 15 2 Z" fill="#ff9b4e"/><circle cx="15" cy="15" r="5" fill="#140b11"/></svg>
+      <div><div class="k" id="placeK">स्थान</div><div class="v" id="placeV">पुष्कर, राजस्थान</div></div>
+    </div>
+
+    <div class="end-card" id="endCard">
+      <svg viewBox="0 0 50 70" aria-hidden="true"><g fill="none" stroke="#e8c27b" stroke-width="2.6" stroke-linecap="round"><path d="M25 68 V12"/><path d="M25 4 V20"/><path d="M10 8 C10 22 16 26 25 26 C34 26 40 22 40 8"/><path d="M19 40 L31 46 M19 46 L31 40"/></g></svg>
+      <div class="next">यह कथा जानिए अगले भाग में</div>
+      <div class="hh">हर हर महादेव!</div>
+    </div>
+
+    <div class="sub" id="sub"><div><span class="speaker" id="speaker" hidden></span></div><div class="line" id="line"></div></div>
+
+    <div class="poster" id="poster">
+      <div class="eyebrow">शिव महापुराण की कथा</div>
+      <h2>भैरव का प्राकट्य</h2>
+      <p>अग्नि-स्तंभ, ब्रह्मा जी का झूठ, केतकी की गवाही और महादेव के क्रोध से भैरव का जन्म</p>
+      <button class="bigplay" id="bigPlay" type="button"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 3 L17 10 L5 17 Z" fill="currentColor"/></svg>कथा देखें</button>
+    </div>
+  </div>
+
+  <div class="ctl">
+    <button id="playBtn" type="button" aria-label="चलाएँ / रोकें"><svg viewBox="0 0 20 20" id="playIco"><path d="M5 3 L17 10 L5 17 Z" fill="currentColor"/></svg><span id="playTxt">चलाएँ</span></button>
+    <div class="track" id="track" tabindex="0" role="slider" aria-label="समय" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="rail"></div><div class="fill" id="fill"></div></div>
+    <span class="time" id="time">0:00 / 0:00</span>
+    <button id="voiceBtn" type="button" aria-pressed="true">आवाज़</button>
+    <button id="musicBtn" type="button" aria-pressed="true">संगीत</button>
+    <button id="fsBtn" type="button" aria-label="पूर्ण स्क्रीन"><svg viewBox="0 0 20 20"><path d="M2 7 V2 H7 M13 2 H18 V7 M18 13 V18 H13 M7 18 H2 V13" fill="none" stroke="currentColor" stroke-width="2"/></svg></button>
+    <span class="voice-note" id="voiceNote"></span>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/BokehShader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/BokehPass.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+<script>
+(() => {
+'use strict';
+const $ = id => document.getElementById(id);
+const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const lerp = (a, b, t) => a + (b - a) * t;
+const clamp01 = x => Math.max(0, Math.min(1, x));
+const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+const easeOut = t => 1 - Math.pow(1 - t, 3);
+const seg = (p, a, b) => clamp01((p - a) / (b - a));
+const C = hex => new THREE.Color(hex).convertSRGBToLinear();
+
+/* ---------------- renderer + post ---------------- */
+const canvas = $('gl'), stageEl = $('stage');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+renderer.outputEncoding = THREE.LinearEncoding;
+renderer.toneMapping = THREE.NoToneMapping;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+const scene = new THREE.Scene();
+scene.fog = new THREE.FogExp2(C(0x2a1420), 0.018);
+const camera = new THREE.PerspectiveCamera(34, 16 / 9, 0.1, 700);
+
+const rt = new THREE.WebGLRenderTarget(16, 9, { type: THREE.HalfFloatType, format: THREE.RGBAFormat, minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter });
+const composer = new THREE.EffectComposer(renderer, rt);
+composer.addPass(new THREE.RenderPass(scene, camera));
+const bokeh = new THREE.BokehPass(scene, camera, { focus: 8, aperture: 0.0016, maxblur: 0.009, width: 16, height: 9 });
+composer.addPass(bokeh);
+const bloom = new THREE.UnrealBloomPass(new THREE.Vector2(16, 9), 0.6, 0.5, 0.95);
+composer.addPass(bloom);
+
+const GradeShader = {
+  uniforms: { tDiffuse: { value: null }, time: { value: 0 }, res: { value: new THREE.Vector2(1, 1) }, krodha: { value: 0 }, fade: { value: 1 }, exposure: { value: 0.92 } },
+  vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }',
+  fragmentShader: `
+    uniform sampler2D tDiffuse; uniform float time, krodha, fade, exposure; uniform vec2 res; varying vec2 vUv;
+    float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1,311.7))) * 43758.5453); }
+    float noise(vec2 p){ vec2 i=floor(p), f=fract(p); f=f*f*(3.-2.*f);
+      return mix(mix(hash(i),hash(i+vec2(1,0)),f.x), mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x), f.y); }
+    vec3 aces(vec3 x){ return clamp((x*(2.51*x+0.03))/(x*(2.43*x+0.59)+0.14), 0., 1.); }
+    void main(){
+      // brush-stroke displacement: anisotropic noise nudges samples along short strokes
+      vec2 px = 1.0 / res;
+      float a = noise(vUv * vec2(38., 22.)) * 6.2831;
+      vec2 dir = vec2(cos(a), sin(a));
+      float st = noise(vUv * res / 3.5 + dir * 2.0);
+      vec2 uv = vUv + dir * (st - .5) * px * 3.2;
+      vec3 c = texture2D(tDiffuse, uv).rgb;
+      c += texture2D(tDiffuse, uv + dir * px * 1.6).rgb; c *= .5;
+      c *= exposure;
+      // warm split grade: plum shadows, amber highlights
+      float l = dot(c, vec3(.2126,.7152,.0722));
+      c = mix(c * vec3(1.02, .9, 1.08), c * vec3(1.08, .98, .84), smoothstep(.02, .6, l));
+      c += vec3(.012, .004, .01);
+      // krodha: everything bleeds toward blood-red
+      c = mix(c, vec3(l) * vec3(2.1, .42, .3) + c * vec3(.25,.05,.05), krodha * .55);
+      c = aces(c);
+      c = pow(c, vec3(1.0/2.2));
+      // canvas / paper tooth
+      float canvasT = noise(gl_FragCoord.xy * .55) * .5 + noise(gl_FragCoord.xy * vec2(.06, 1.1)) * .5;
+      c *= .955 + canvasT * .07;
+      // vignette
+      vec2 q = (vUv - .5) * vec2(1.0, .78);
+      c *= mix(.42, 1.0, smoothstep(.78, .18, length(q)));
+      c += (hash(gl_FragCoord.xy + fract(time) * 91.7) - .5) * .028;
+      gl_FragColor = vec4(c * fade, 1.0);
+    }`
+};
+const grade = new THREE.ShaderPass(GradeShader);
+composer.addPass(grade);
+
+function resize() {
+  const r = stageEl.getBoundingClientRect();
+  const w = Math.max(2, Math.round(r.width)), h = Math.max(2, Math.round(r.height));
+  const pr = Math.min(window.devicePixelRatio || 1, 1.5);
+  renderer.setPixelRatio(pr); renderer.setSize(w, h, false);
+  composer.setPixelRatio(pr); composer.setSize(w, h);
+  camera.aspect = w / h; camera.updateProjectionMatrix();
+  bokeh.uniforms.aspect.value = w / h;
+  grade.uniforms.res.value.set(w * pr, h * pr);
+}
+new ResizeObserver(resize).observe(stageEl);
+
+/* ---------------- materials ---------------- */
+const RIM = { color: { value: C(0xffa65a) }, power: { value: 2.4 }, strength: { value: 1.0 } };
+function rimify(m) {
+  m.onBeforeCompile = s => {
+    s.uniforms.rimColor = RIM.color; s.uniforms.rimPower = RIM.power; s.uniforms.rimStrength = RIM.strength;
+    s.fragmentShader = 'uniform vec3 rimColor; uniform float rimPower; uniform float rimStrength;\n' +
+      s.fragmentShader.replace('#include <emissivemap_fragment>', `#include <emissivemap_fragment>
+        float rimF = pow(1.0 - clamp(dot(normal, normalize(vViewPosition)), 0.0, 1.0), rimPower);
+        /* rim light + a cheap subsurface wrap that warms thin silhouettes */
+        totalEmissiveRadiance += rimColor * rimF * rimStrength * (0.35 + diffuseColor.rgb * 1.4);`);
+  };
+  return m;
+}
+function mat(hex, o = {}) {
+  const p = Object.assign({ color: C(hex), flatShading: true, roughness: .72, metalness: .04 }, o);
+  if (p.emissive !== undefined && !(p.emissive instanceof THREE.Color)) p.emissive = C(p.emissive);
+  return rimify(new THREE.MeshStandardMaterial(p));
+}
+const GOLD = mat(0xe0a948, { metalness: .75, roughness: .32 });
+const SILVER = mat(0xd9d4cc, { metalness: .8, roughness: .3 });
+
+function glowTexture(stops) {
+  const c = document.createElement('canvas'); c.width = c.height = 128;
+  const g = c.getContext('2d'); const gr = g.createRadialGradient(64, 64, 0, 64, 64, 64);
+  stops.forEach(([o, col]) => gr.addColorStop(o, col)); g.fillStyle = gr; g.fillRect(0, 0, 128, 128);
+  const t = new THREE.CanvasTexture(c); return t;
+}
+const GLOW = glowTexture([[0, 'rgba(255,255,255,1)'], [.25, 'rgba(255,255,255,.55)'], [1, 'rgba(255,255,255,0)']]);
+const RINGTEX = (() => { const c = document.createElement('canvas'); c.width = c.height = 128; const g = c.getContext('2d');
+  const gr = g.createRadialGradient(64, 64, 40, 64, 64, 64); gr.addColorStop(0, 'rgba(255,255,255,0)'); gr.addColorStop(.6, 'rgba(255,255,255,.9)'); gr.addColorStop(1, 'rgba(255,255,255,0)');
+  g.fillStyle = gr; g.fillRect(0, 0, 128, 128); return new THREE.CanvasTexture(c); })();
+function glowSprite(hex, size, opacity = 1, tex = GLOW) {
+  const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, color: C(hex), transparent: true, opacity, depthWrite: false, blending: THREE.AdditiveBlending, fog: false }));
+  s.scale.set(size, size, 1); return s;
+}
+
+/* ---------------- geometry helpers ---------------- */
+function put(parent, obj, x = 0, y = 0, z = 0) { obj.position.set(x, y, z); obj.castShadow = true; obj.receiveShadow = true; parent.add(obj); return obj; }
+const cyl = (rt, rb, h, s, m) => new THREE.Mesh(new THREE.CylinderGeometry(rt, rb, h, s, 1), m);
+const ico = (r, d, m) => new THREE.Mesh(new THREE.IcosahedronGeometry(r, d), m);
+const cone = (r, h, s, m) => new THREE.Mesh(new THREE.ConeGeometry(r, h, s), m);
+const box = (w, h, d, m) => new THREE.Mesh(new THREE.BoxGeometry(w, h, d), m);
+const torus = (r, t, rs, ts, m, arc) => new THREE.Mesh(new THREE.TorusGeometry(r, t, rs, ts, arc), m);
+function jitter(geo, amt) { const p = geo.attributes.position; for (let i = 0; i < p.count; i++) { p.setXYZ(i, p.getX(i) + (Math.random() - .5) * amt, p.getY(i) + (Math.random() - .5) * amt, p.getZ(i) + (Math.random() - .5) * amt); } geo.computeVertexNormals(); return geo; }
+
+/* ---------------- shaders: sky + fire ---------------- */
+const NOISE_GLSL = `
+  float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1,311.7))) * 43758.5453); }
+  float noise(vec2 p){ vec2 i=floor(p), f=fract(p); f=f*f*(3.-2.*f);
+    return mix(mix(hash(i),hash(i+vec2(1,0)),f.x), mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x), f.y); }
+  float fbm(vec2 p){ float v=0., a=.5; for(int i=0;i<5;i++){ v+=a*noise(p); p*=2.03; a*=.5; } return v; }`;
+const sky = new THREE.Mesh(new THREE.SphereGeometry(400, 32, 16), new THREE.ShaderMaterial({
+  side: THREE.BackSide, depthWrite: false, fog: false,
+  uniforms: { top: { value: C(0x1b1030) }, mid: { value: C(0xc0603a) }, bot: { value: C(0x1a0c12) }, time: { value: 0 }, stars: { value: 1 }, neb: { value: C(0x8a3a6a) }, sun: { value: new THREE.Vector3(0, .1, -1) }, sunAmt: { value: 0 } },
+  vertexShader: 'varying vec3 vW; void main(){ vW = normalize(position); gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }',
+  fragmentShader: `uniform vec3 top, mid, bot, neb; uniform float time, stars, sunAmt; uniform vec3 sun; varying vec3 vW;
+    ${NOISE_GLSL}
+    void main(){
+      float h = vW.y;
+      vec3 col = h > 0. ? mix(mid, top, pow(clamp(h * 1.6, 0., 1.), .55)) : mix(mid, bot, clamp(-h * 4., 0., 1.));
+      vec2 sp = vec2(atan(vW.z, vW.x) * 2.2, h * 3.2);
+      float n = fbm(sp + vec2(time * .006, 0.)); float n2 = fbm(sp * 2.3 - vec2(time * .004, 3.1));
+      col += neb * smoothstep(.45, .85, n) * .55 * smoothstep(-.05, .35, h);
+      col += mid * smoothstep(.55, .9, n2) * .25;
+      vec2 sg = floor(vec2(atan(vW.z, vW.x) * 260., h * 260.));
+      float s = step(.9965, hash(sg)) * smoothstep(.12, .5, h) * stars * (.6 + .4 * sin(time * 2. + hash(sg + 3.) * 30.));
+      col += vec3(s) * .9;
+      float sd = max(dot(normalize(vW), normalize(sun)), 0.);
+      col += vec3(1., .62, .32) * (pow(sd, 900.) * 6. + pow(sd, 12.) * .35) * sunAmt;
+      gl_FragColor = vec4(col, 1.);
+    }`
+}));
+sky.renderOrder = -10; scene.add(sky);
+
+function fireMaterial(c1, c2, c3, speed = 1.6, scale = [8, 60], alpha = 1) {
+  return new THREE.ShaderMaterial({
+    transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, fog: false,
+    uniforms: { time: { value: 0 }, c1: { value: C(c1) }, c2: { value: C(c2) }, c3: { value: C(c3) }, intensity: { value: 2.2 }, alpha: { value: alpha }, speed: { value: speed }, sc: { value: new THREE.Vector2(...scale) } },
+    vertexShader: 'varying vec2 vUv; varying vec3 vN; varying vec3 vV; void main(){ vUv=uv; vec4 mv = modelViewMatrix*vec4(position,1.); vN = normalize(normalMatrix*normal); vV = normalize(-mv.xyz); gl_Position = projectionMatrix*mv; }',
+    fragmentShader: `uniform float time, intensity, alpha, speed; uniform vec3 c1, c2, c3; uniform vec2 sc; varying vec2 vUv; varying vec3 vN; varying vec3 vV;
+      ${NOISE_GLSL}
+      void main(){
+        vec2 p = vec2(vUv.x * sc.x, vUv.y * sc.y - time * speed);
+        float n = fbm(p); float n2 = fbm(p * 1.7 + vec2(3., time * .4));
+        float facing = abs(dot(vN, vV)); float fres = 1. - facing;
+        float f = n * .75 + n2 * .45;
+        vec3 col = mix(c1, c2, smoothstep(.35, .8, f));
+        col = mix(col, c3, smoothstep(.7, 1.05, f + facing * .35));
+        float a = (.45 + .55 * f) * mix(1., .35, pow(fres, 1.5)) * alpha;
+        gl_FragColor = vec4(col * intensity, a);
+      }`
+  });
+}
+
+/* ---------------- embers ---------------- */
+const emberSystems = [];
+function makeEmbers(parent, n, center, spread, height, hex, size, speed = .12) {
+  const g = new THREE.BufferGeometry(); const pos = new Float32Array(n * 3); const seed = new Float32Array(n);
+  for (let i = 0; i < n; i++) seed[i] = Math.random();
+  g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  const m = new THREE.PointsMaterial({ map: GLOW, color: C(hex), size, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true });
+  const pts = new THREE.Points(g, m); pts.frustumCulled = false; parent.add(pts);
+  pts.userData.update = t => {
+    for (let i = 0; i < n; i++) {
+      const s = seed[i]; const life = (t * speed * (.6 + s) + s * 7.3) % 1; const ang = s * 40 + t * .25 * (s - .5);
+      const r = spread * (.25 + .75 * ((s * 13.7) % 1)) * (1 + life * .4);
+      pos[i * 3] = center.x + Math.cos(ang) * r + Math.sin(t * 1.3 + s * 9) * .15;
+      pos[i * 3 + 1] = center.y + life * height;
+      pos[i * 3 + 2] = center.z + Math.sin(ang) * r;
+    }
+    g.attributes.position.needsUpdate = true;
+  };
+  emberSystems.push(pts); return pts;
+}
+
+/* ---------------- global lights ---------------- */
+const hemi = new THREE.HemisphereLight(C(0xffd2a8), C(0x3a1b2c), .55); scene.add(hemi);
+const key = new THREE.DirectionalLight(C(0xffc28a), 1.5);
+key.position.set(6, 12, 9); key.castShadow = true; key.shadow.mapSize.set(2048, 2048);
+Object.assign(key.shadow.camera, { left: -14, right: 14, top: 14, bottom: -14, near: 1, far: 50 }); key.shadow.bias = -0.0006;
+scene.add(key); scene.add(key.target);
+const back = new THREE.DirectionalLight(C(0xff7a3d), 1.3); back.position.set(-4, 6, -14); scene.add(back);
+
+/* ============ LOCATION A — the cosmic plateau of the Agni-Stambha ============ */
+const locA = new THREE.Group(); scene.add(locA);
+{
+  const g = new THREE.PlaneGeometry(140, 140, 70, 70); g.rotateX(-Math.PI / 2);
+  const p = g.attributes.position;
+  for (let i = 0; i < p.count; i++) { const x = p.getX(i), z = p.getZ(i); const d = Math.hypot(x, z);
+    p.setY(i, (Math.random() - .5) * .25 + Math.max(0, d - 14) * .06 * (Math.sin(x * .3) + Math.cos(z * .25) + 1.5)); }
+  g.computeVertexNormals();
+  const ground = new THREE.Mesh(g, mat(0x4a2a2c, { roughness: .95 })); ground.receiveShadow = true; locA.add(ground);
+  // cracked molten veins radiating from the pillar
+  for (let i = 0; i < 14; i++) {
+    const a = i / 14 * Math.PI * 2 + Math.random() * .2; const len = 4 + Math.random() * 7;
+    const v = box(.06, .02, len, new THREE.MeshBasicMaterial({ color: C(0xff7a2a), fog: true }));
+    v.position.set(Math.sin(a) * (len / 2 + 1.6), .03, -6 + Math.cos(a) * (len / 2 + 1.6)); v.rotation.y = a; locA.add(v);
+  }
+  // distant crags
+  for (let i = 0; i < 26; i++) {
+    const a = i / 26 * Math.PI * 2; const r = 46 + Math.random() * 22; const h = 8 + Math.random() * 22;
+    const m = cone(4 + Math.random() * 6, h, 5, mat(i % 2 ? 0x3b2030 : 0x51283a, { roughness: 1 }));
+    jitter(m.geometry, 1.4); m.position.set(Math.sin(a) * r, h / 2 - 1, Math.cos(a) * r - 6); m.rotation.y = Math.random() * 3; locA.add(m);
+  }
+  // floating low-poly rocks
+  for (let i = 0; i < 18; i++) {
+    const r = ico(.4 + Math.random() * 1.1, 0, mat(0x6b3b3e)); jitter(r.geometry, .25);
+    const a = Math.random() * Math.PI * 2, d = 12 + Math.random() * 20;
+    r.position.set(Math.sin(a) * d, 5 + Math.random() * 14, Math.cos(a) * d - 8); r.userData.spin = Math.random() * .3 + .05; r.userData.by = r.position.y;
+    r.castShadow = true; locA.add(r); (locA.userData.rocks ||= []).push(r);
+  }
+}
+// the infinite pillar of fire
+const pillar = new THREE.Group(); pillar.position.set(0, 0, -6); locA.add(pillar);
+const pillarCore = new THREE.Mesh(new THREE.CylinderGeometry(1.25, 1.35, 260, 24, 1, true), fireMaterial(0xff5a1a, 0xffb347, 0xfff1c9, 1.7, [7, 90]));
+pillarCore.position.y = 128; pillar.add(pillarCore);
+const pillarHalo = new THREE.Mesh(new THREE.CylinderGeometry(2.3, 2.6, 260, 24, 1, true), fireMaterial(0x7a1408, 0xff6a1f, 0xffc070, 1.1, [5, 50], .45));
+pillarHalo.position.y = 128; pillar.add(pillarHalo);
+const pillarBase = glowSprite(0xff8a3a, 12, .9); pillarBase.position.y = 1.2; pillar.add(pillarBase);
+const pillarLight = new THREE.PointLight(C(0xff8a3c), 4.5, 30, 1.6); pillarLight.position.set(0, 3, 1.8); pillar.add(pillarLight);
+const embersA = makeEmbers(locA, 260, new THREE.Vector3(0, 0, -6), 3.2, 22, 0xffa050, .22, .09);
+
+/* ---------------- character construction ---------------- */
+function faceHead(parent, r, skinM, eyeM, opts = {}) {
+  const h = new THREE.Group(); parent.add(h);
+  const m = put(h, ico(r, 1, skinM)); m.scale.set(.92, 1.08, .95);
+  const white = opts.white || mat(0xf3e9dc, { roughness: .4 });
+  [-1, 1].forEach(s => {
+    const w = put(h, ico(r * .2, 0, white), s * r * .34, r * .1, r * .8); w.scale.set(1.2, .8, .5);
+    put(h, ico(r * .12, 0, eyeM), s * r * .34, r * .1, r * .9);
+  });
+  const nose = put(h, cone(r * .14, r * .38, 4, skinM), 0, -r * .1, r * .92); nose.rotation.x = Math.PI / 2;
+  put(h, box(r * .32, r * .06, r * .05, mat(0x7a2a2a)), 0, -r * .45, r * .82);
+  if (opts.beard) { const b = put(h, cone(r * .55, r * 1.1, 6, opts.beard), 0, -r * .95, r * .45); b.rotation.x = Math.PI; b.scale.z = .7; }
+  if (opts.crown) { put(h, cyl(r * .55, r * .72, r * .7, 7, GOLD), 0, r * 1.05, 0); put(h, cone(r * .3, r * .5, 6, GOLD), 0, r * 1.62, 0); }
+  return h;
+}
+
+function buildFigure(o) {
+  const root = new THREE.Group(); const body = new THREE.Group(); root.add(body);
+  const skin = mat(o.skin, { roughness: .58, emissive: o.skinEmissive || 0x000000 });
+  const cloth = mat(o.cloth, { roughness: .88 });
+  const eyeM = new THREE.MeshStandardMaterial({ color: C(0x1a0f0a), emissive: C(o.eyeGlow || 0x000000), roughness: .3 });
+  const F = { root, body, skin, cloth, eyeM };
+  const lower = new THREE.Group(); body.add(lower); F.lower = lower;
+  put(lower, cyl(.36, .6, 1.05, 7, cloth), 0, .53, 0).scale.z = .82;
+  put(lower, box(.2, .09, .32, skin), -.16, .045, .08); put(lower, box(.2, .09, .32, skin), .16, .045, .08);
+  put(lower, torus(.37, .05, 4, 9, GOLD), 0, 1.04, 0).rotation.x = Math.PI / 2;
+  if (o.sash) { const s = put(lower, box(.16, .7, .04, mat(o.sash)), 0, .7, .32); s.rotation.x = -.12; }
+  const upper = new THREE.Group(); upper.position.y = 1.05; body.add(upper); F.upper = upper;
+  const torso = put(upper, cyl(.5, .35, .86, 7, skin), 0, .43, 0); torso.scale.z = .7;
+  put(upper, cyl(.13, .15, .2, 6, skin), 0, .94, 0);
+  put(upper, torus(.27, .035, 4, 10, GOLD), 0, .82, .02).rotation.x = Math.PI / 2 - .25;
+  if (o.uttariya) { const u = put(upper, box(.12, .95, .05, mat(o.uttariya)), .08, .45, .3); u.rotation.z = .55; u.rotation.x = -.1; }
+  const head = new THREE.Group(); head.position.y = 1.15; upper.add(head); F.head = head;
+  if (!o.noFace) F.face = faceHead(head, .27, skin, eyeM, { beard: o.beard, crown: o.crown });
+  function arm(side, y = .78, z = 0, inset = .5) {
+    const sh = new THREE.Group(); sh.position.set(side * inset, y, z); upper.add(sh);
+    put(sh, ico(.13, 0, skin));
+    put(sh, cyl(.1, .085, .55, 6, skin), 0, -.28, 0);
+    put(sh, torus(.1, .025, 4, 8, GOLD), 0, -.18, 0).rotation.x = Math.PI / 2;
+    const el = new THREE.Group(); el.position.y = -.55; sh.add(el);
+    put(el, cyl(.085, .07, .5, 6, skin), 0, -.25, 0);
+    put(el, torus(.08, .025, 4, 8, GOLD), 0, -.43, 0).rotation.x = Math.PI / 2;
+    const hand = new THREE.Group(); hand.position.y = -.55; el.add(hand);
+    put(hand, ico(.095, 0, skin));
+    return { sh, el, hand };
+  }
+  F.armR = arm(-1); F.armL = arm(1); F.arm = arm;
+  root.scale.setScalar(o.scale || 1);
+  return F;
+}
+
+const POSES = {
+  rest:      { R: [.05, -.12, -.15, 0], L: [.05, .12, -.15, 0] },
+  namaste:   { R: [-.5, .5, -1.75, 0], L: [-.5, -.5, -1.75, 0] },
+  trishul:   { R: [.05, -.14, -.25, 0], L: [-.15, .3, -.95, 0] },
+  point:     { R: [-1.3, .45, -.1, 0], L: [-.15, .3, -.95, 0] },
+  abhaya:    { R: [-.3, -.28, -1.95, 0], L: [-.15, .3, -.95, 0] },
+  bless:     { R: [-1.55, .55, -.35, 0], L: [-.15, .3, -.95, 0] },
+  roar:      { R: [-.5, -1.15, -.8, 0], L: [-.5, 1.15, -.8, 0] },
+  swordUp:   { R: [-2.75, -.35, -.45, 0], L: [-.4, .35, -.7, 0] },
+  swordDown: { R: [-.35, .55, -.1, 0], L: [-.4, .35, -.7, 0] },
+  holdHead:  { R: [.08, -.25, -.35, 0], L: [-1.2, -.2, -1.35, 0] },
+  carryHead: { R: [-.2, -.3, -.4, 0], L: [-.75, .15, -.85, 0] },
+  hold:      { R: [-.45, -.12, -1.15, 0], L: [-.45, .12, -1.15, 0] },
+  tremble:   { R: [-.3, .2, -1.4, 0], L: [-.3, -.2, -1.4, 0] },
+  offer:     { R: [-.85, .1, -.55, 0], L: [-.6, -.15, -1.2, 0] },
+};
+function pose(F, a, b = a, t = 1) {
+  const A = POSES[a], B = POSES[b];
+  [['R', F.armR], ['L', F.armL]].forEach(([s, arm]) => {
+    const pa = A[s], pb = B[s];
+    arm.sh.rotation.set(lerp(pa[0], pb[0], t), 0, lerp(pa[1], pb[1], t));
+    arm.el.rotation.set(lerp(pa[2], pb[2], t), 0, lerp(pa[3], pb[3], t));
+  });
+}
+
+/* --- Mahadev --- */
+const shiva = buildFigure({ skin: 0x7f9cc8, cloth: 0xb8702f, scale: 1.45, sash: 0x5a3a22 });
+{
+  const H = shiva.head, hair = mat(0x2a1a14, { roughness: .9 });
+  const j = put(H, ico(.24, 0, hair), 0, .26, -.06); j.scale.set(1, 1.15, 1);
+  put(H, ico(.15, 0, hair), 0, .5, -.02);
+  put(H, torus(.13, .035, 4, 8, mat(0x4a2c1c)), 0, .44, -.02).rotation.x = Math.PI / 2;
+  for (let i = 0; i < 7; i++) { const l = put(H, cone(.07, .75, 4, hair), (i - 3) * .07, -.2, -.24 - Math.abs(i - 3) * .01); l.rotation.x = Math.PI + .25; }
+  const moon = put(H, torus(.11, .026, 4, 12, mat(0xf4f0e6, { emissive: 0xbfd8ff, emissiveIntensity: .7 }), Math.PI * 1.15), .14, .42, .08);
+  moon.rotation.set(0, .5, -1.2);
+  const ash = mat(0xf5efe6, { roughness: .5 });
+  [0, 1, 2].forEach(i => put(H, box(.17, .013, .012, ash), 0, .13 + i * .025, .25));
+  shiva.thirdEyeM = new THREE.MeshStandardMaterial({ color: C(0x40222a), emissive: C(0xff3a1a), emissiveIntensity: 0, roughness: .4 });
+  const te = put(H, ico(.028, 0, shiva.thirdEyeM), 0, .2, .255); te.scale.set(.8, 1.7, .5); shiva.thirdEye = te;
+  const snake = mat(0x3f7a4a, { roughness: .5 });
+  put(shiva.upper, torus(.19, .045, 5, 10, snake), 0, .95, 0).rotation.x = Math.PI / 2;
+  const sh = put(shiva.upper, cone(.06, .18, 4, snake), .1, 1.08, .17); sh.rotation.x = .4;
+  put(shiva.upper, torus(.33, .03, 4, 14, mat(0x5a2e1e)), 0, .62, .04).rotation.x = Math.PI / 2 - .45; // rudraksha
+  // trishul with damaru
+  const tr = new THREE.Group();
+  put(tr, cyl(.028, .028, 3.4, 6, SILVER), 0, .6, 0);
+  [-1, 0, 1].forEach(s => { const pr = put(tr, cone(.06, .42, 4, SILVER), s * .17, 2.45 + (s ? 0 : .08), 0); if (s) { put(tr, box(.04, .2, .04, SILVER), s * .17, 2.2, 0); } });
+  put(tr, box(.4, .05, .05, SILVER), 0, 2.13, 0);
+  const dm = new THREE.Group(); dm.position.set(0, 1.85, .05); tr.add(dm);
+  put(dm, cone(.09, .12, 6, mat(0x8a5a33)), 0, .06, 0).rotation.x = Math.PI; put(dm, cone(.09, .12, 6, mat(0x8a5a33)), 0, -.06, 0).rotation.x = 0;
+  dm.rotation.z = Math.PI / 2;
+  shiva.body.add(tr); shiva.trishul = tr;
+  shiva.aura = glowSprite(0xaecbff, 9, .0); shiva.aura.position.set(0, 2.1, -.6); shiva.root.add(shiva.aura);
+}
+shiva.root.position.set(0, 0, -3.3); locA.add(shiva.root);
+
+/* --- Vishnu (four arms, chakra, shankh) --- */
+const vishnu = buildFigure({ skin: 0x3b5fae, cloth: 0xf0b52e, scale: 1.12, crown: true, uttariya: 0xd85a2a });
+{
+  vishnu.armR2 = vishnu.arm(-1, .72, -.14, .44); vishnu.armL2 = vishnu.arm(1, .72, -.14, .44);
+  vishnu.armR2.sh.rotation.set(-.15, 0, -1.25); vishnu.armR2.el.rotation.set(0, 0, -1.85);
+  vishnu.armL2.sh.rotation.set(-.15, 0, 1.25); vishnu.armL2.el.rotation.set(0, 0, 1.85);
+  const ch = new THREE.Group(); ch.position.set(0, -.3, 0); vishnu.armR2.hand.add(ch);
+  const cm = mat(0xffd36a, { metalness: .6, roughness: .3, emissive: 0xff9a2a, emissiveIntensity: .9 });
+  put(ch, torus(.17, .025, 4, 16, cm));
+  for (let i = 0; i < 8; i++) { const sp = put(ch, box(.012, .32, .01, cm)); sp.rotation.z = i * Math.PI / 8; }
+  ch.add(glowSprite(0xffb14a, .9, .7)); vishnu.chakra = ch;
+  const sk = put(vishnu.armL2.hand, cone(.07, .26, 6, mat(0xf6efe4, { roughness: .3 })), 0, -.12, 0); sk.rotation.z = .4;
+  // vanamala garland
+  const vm = mat(0xd84a5a); for (let i = 0; i < 18; i++) { const a = i / 17 * Math.PI; put(vishnu.upper, ico(.04, 0, i % 3 ? vm : mat(0xf7d26a)), Math.cos(a) * .3, .85 - Math.sin(a) * .62, .27 + Math.sin(a) * .02); }
+}
+vishnu.root.position.set(-2.9, 0, .2); vishnu.root.rotation.y = 1.75; locA.add(vishnu.root);
+
+/* --- Brahma (four faces + the fifth) --- */
+const BEARD = mat(0xf2ede4, { roughness: .9 });
+function buildBrahma(scale, seated) {
+  const B = buildFigure({ skin: 0xd99550, cloth: 0xa8322d, scale, noFace: true, uttariya: 0xf0a83a });
+  [[0, 0], [Math.PI / 2, 1], [-Math.PI / 2, 1], [Math.PI, 1]].forEach(([ry, side]) => {
+    const g = new THREE.Group(); g.rotation.y = ry; B.head.add(g);
+    const f = faceHead(g, .22, B.skin, B.eyeM, { beard: BEARD }); f.position.z = side ? .1 : .13;
+    put(g, cyl(.12, .16, .14, 7, GOLD), 0, .24, side ? .1 : .13);
+  });
+  B.fifthAnchor = new THREE.Object3D(); B.fifthAnchor.position.set(0, .45, 0); B.head.add(B.fifthAnchor);
+  const lotus = new THREE.Group(); B.armL.hand.add(lotus); lotus.position.y = -.12;
+  for (let i = 0; i < 8; i++) { const p = put(lotus, cone(.05, .2, 4, mat(0xf2a3b4, { emissive: 0x6a1a2a, emissiveIntensity: .3 })), Math.sin(i * .785) * .06, -.06, Math.cos(i * .785) * .06); p.rotation.set(Math.cos(i * .785) * 2.6, 0, -Math.sin(i * .785) * 2.6); }
+  const vedas = put(B.armR.hand, box(.2, .07, .28, mat(0x8a5a2a)), 0, -.08, .04); put(vedas, box(.21, .03, .27, mat(0xf3e2b8)), 0, .02, 0);
+  if (seated) {
+    B.lower.visible = false;
+    put(B.body, cyl(.62, .7, .3, 8, B.cloth), 0, .15, .05).scale.z = .8;
+    put(B.body, torus(.36, .05, 4, 9, GOLD), 0, .3, 0).rotation.x = Math.PI / 2;
+    B.upper.position.y = .3;
+  }
+  return B;
+}
+function buildFifthHead() {
+  const g = new THREE.Group(); const skin = mat(0xd99550, { roughness: .58 });
+  const eyeM = new THREE.MeshStandardMaterial({ color: C(0x1a0f0a), roughness: .3, emissive: C(0x000000) });
+  const f = faceHead(g, .19, skin, eyeM, { beard: BEARD }); f.position.y = .02;
+  put(g, cyl(.1, .14, .16, 7, GOLD), 0, .22, 0); put(g, cone(.06, .14, 6, GOLD), 0, .36, 0);
+  g.userData = { skin, eyeM }; return g;
+}
+const brahma = buildBrahma(1.1, false);
+brahma.root.position.set(2.9, 0, .2); brahma.root.rotation.y = -1.75; locA.add(brahma.root);
+const fifth = buildFifthHead(); locA.add(fifth);
+const fifthGlow = glowSprite(0xff5a3a, 1.2, 0); fifth.add(fifthGlow);
+
+/* --- Ketaki flower --- */
+const ketaki = new THREE.Group(); locA.add(ketaki);
+const ketakiM = mat(0xf5ecd2, { roughness: .45, emissive: 0xffe9b0, emissiveIntensity: .25 });
+const ketakiPetals = [];
+{
+  put(ketaki, cyl(.025, .035, 1.0, 5, mat(0x5f8a3a)), 0, -.55, 0);
+  for (let i = 0; i < 4; i++) { const lf = put(ketaki, cone(.06, 1.0, 3, mat(0x6f9a3e)), 0, -.55, 0); lf.rotation.set(.55, i * 1.57 + .3, 0); lf.position.y = -.7; }
+  for (let i = 0; i < 9; i++) {
+    const pv = new THREE.Group(); pv.rotation.y = i / 9 * Math.PI * 2; ketaki.add(pv);
+    const pt = put(pv, cone(.075, .75, 4, ketakiM), 0, .32, .05); pt.rotation.x = .32 + (i % 2) * .12;
+    ketakiPetals.push(pv);
+  }
+  put(ketaki, cyl(.05, .07, .5, 6, mat(0xf2c64a, { emissive: 0xffa020, emissiveIntensity: .5 })), 0, .25, 0);
+  ketaki.glow = glowSprite(0xfff0c8, 1.8, .5); ketaki.glow.position.y = .3; ketaki.add(ketaki.glow);
+  ketaki.rings = [0, 1, 2].map(() => { const r = glowSprite(0xffe2a8, 1, 0, RINGTEX); ketaki.add(r); r.position.y = .3; return r; });
+}
+ketaki.scale.setScalar(.85);
+
+/* --- Bhairava --- */
+const bhairav = buildFigure({ skin: 0x2b2740, cloth: 0x3a0e10, scale: 1.6, skinEmissive: 0x3a0606, eyeGlow: 0xffb030, sash: 0x8a1a12 });
+{
+  bhairav.eyeM.emissiveIntensity = 3;
+  const H = bhairav.head;
+  const flameMs = [0xff3a12, 0xff7a20, 0xffb040].map(c => new THREE.MeshBasicMaterial({ color: C(c), transparent: true, opacity: .9, fog: false }));
+  bhairav.flames = [];
+  for (let i = 0; i < 13; i++) {
+    const a = i / 13 * Math.PI * 2; const f = put(H, cone(.09 + Math.random() * .05, .55 + Math.random() * .4, 4, flameMs[i % 3]), Math.sin(a) * .2, .38, Math.cos(a) * .17 - .05);
+    f.rotation.set(Math.cos(a) * .55 - .3, 0, -Math.sin(a) * .55); f.castShadow = false; f.userData.base = f.scale.y; bhairav.flames.push(f);
+  }
+  const fangM = mat(0xf6f1e6, { roughness: .3 });
+  [-1, 1].forEach(s => { const fg = put(H, cone(.025, .09, 4, fangM), s * .05, -.15, .23); fg.rotation.x = Math.PI; });
+  bhairav.thirdEye = put(H, ico(.03, 0, new THREE.MeshBasicMaterial({ color: C(0xffc060) })), 0, .19, .25); bhairav.thirdEye.scale.set(.8, 1.7, .5);
+  // brows angled in fury
+  [-1, 1].forEach(s => { const b = put(H, box(.13, .03, .03, mat(0x120a10)), s * .1, .1, .245); b.rotation.z = s * .4; });
+  const skull = mat(0xe9e0cf, { roughness: .55 });
+  for (let i = 0; i < 15; i++) { const a = i / 14 * Math.PI; put(bhairav.upper, ico(.06, 0, skull), Math.cos(a) * .36, .86 - Math.sin(a) * .75, .3 + Math.sin(a) * .05); }
+  put(bhairav.upper, torus(.2, .05, 5, 10, mat(0x2e2a1e)), 0, .95, 0).rotation.x = Math.PI / 2;
+  // khadga
+  const sw = new THREE.Group(); bhairav.armR.hand.add(sw);
+  put(sw, cyl(.03, .03, .22, 6, mat(0x2a1a12)), 0, -.05, 0);
+  put(sw, box(.22, .04, .06, GOLD), 0, -.16, 0);
+  const blade = put(sw, box(.09, 1.25, .018, mat(0xd8dde6, { metalness: .85, roughness: .2, emissive: 0xff7a3a, emissiveIntensity: .25 })), 0, -.8, 0);
+  bhairav.bladeM = blade.material;
+  bhairav.aura = glowSprite(0xff3a12, 7, 0); bhairav.aura.position.set(0, 2, -.4); bhairav.root.add(bhairav.aura);
+}
+locA.add(bhairav.root);
+const bhairavEmbers = makeEmbers(bhairav.root, 70, new THREE.Vector3(0, .2, 0), .9, 3.2, 0xff5a20, .14, .25);
+
+/* --- effects: shockwave, slash --- */
+const shock = new THREE.Mesh(new THREE.RingGeometry(.9, 1.0, 64), new THREE.MeshBasicMaterial({ color: C(0xff8a40), transparent: true, opacity: 0, side: THREE.DoubleSide, blending: THREE.AdditiveBlending, depthWrite: false, fog: false }));
+shock.rotation.x = -Math.PI / 2; shock.position.set(.9, .08, -2.2); locA.add(shock);
+const shock2 = shock.clone(); shock2.material = shock.material.clone(); locA.add(shock2);
+const slash = new THREE.Mesh(new THREE.TorusGeometry(.9, .03, 3, 40, Math.PI * .7), new THREE.MeshBasicMaterial({ color: C(0xfff2d0), transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false, fog: false }));
+locA.add(slash);
+const blessGlow = glowSprite(0xffd27a, 5, 0); locA.add(blessGlow); blessGlow.position.set(2.9, 2.8, .2);
+
+/* ============ LOCATION B — a yajna mandapa ============ */
+const locB = new THREE.Group(); scene.add(locB);
+const brahmaSeated = buildBrahma(1.0, true);
+const yajnaFire = new THREE.Group();
+let yajnaLight;
+{
+  const floor = new THREE.Mesh(new THREE.CylinderGeometry(9, 9.4, .3, 12), mat(0x7a5a46, { roughness: .95 })); floor.position.y = -.15; floor.receiveShadow = true; locB.add(floor);
+  const outer = new THREE.Mesh(new THREE.PlaneGeometry(200, 200, 30, 30).rotateX(-Math.PI / 2), mat(0x3a2622, { roughness: 1 })); outer.position.y = -.3; outer.receiveShadow = true; locB.add(outer);
+  const brick = mat(0x9a4a32, { roughness: .9 });
+  [[1.9, .18], [1.5, .36], [1.1, .52]].forEach(([w, y]) => { const ring = new THREE.Group(); locB.add(ring);
+    put(ring, box(w, .16, .22, brick), 0, y, w / 2); put(ring, box(w, .16, .22, brick), 0, y, -w / 2);
+    put(ring, box(.22, .16, w, brick), w / 2, y, 0); put(ring, box(.22, .16, w, brick), -w / 2, y, 0); });
+  put(locB, box(1.9, .1, 1.9, brick), 0, .05, 0);
+  // fire tongues
+  locB.add(yajnaFire); yajnaFire.position.y = .5;
+  const fm = [0xff5a14, 0xff9a2a, 0xffd36a].map(c => new THREE.MeshBasicMaterial({ color: C(c), transparent: true, opacity: .85, blending: THREE.AdditiveBlending, depthWrite: false, fog: false }));
+  for (let i = 0; i < 11; i++) { const f = cone(.14 + Math.random() * .12, .9 + Math.random() * .9, 5, fm[i % 3]); const a = i * 2.4; f.position.set(Math.sin(a) * .28 * Math.random(), .45, Math.cos(a) * .28 * Math.random()); f.userData.ph = Math.random() * 6; yajnaFire.add(f); }
+  { const yg = glowSprite(0xff9a40, 4, .8); yg.position.set(0, .7, 0); yajnaFire.add(yg); }
+  yajnaLight = new THREE.PointLight(C(0xff8a3c), 4.5, 30, 1.6); yajnaLight.position.set(0, 1.4, 0); locB.add(yajnaLight);
+  makeEmbers(locB, 120, new THREE.Vector3(0, .8, 0), .45, 6, 0xffa050, .12, .22);
+  // mandapa: four pillars + stepped pyramidal roof
+  const stone = mat(0xc9a07a, { roughness: .8 });
+  [[-3, -3], [3, -3], [-3, 3], [3, 3]].forEach(([x, z]) => { put(locB, cyl(.22, .26, 4.4, 8, stone), x, 2.2, z); put(locB, box(.7, .25, .7, stone), x, 4.45, z); put(locB, box(.7, .25, .7, stone), x, .12, z); });
+  put(locB, box(7.2, .3, 7.2, stone), 0, 4.7, 0);
+  [[6.4, 5.1], [5.2, 5.6], [4.0, 6.1], [2.8, 6.6]].forEach(([w, y]) => put(locB, box(w, .5, w, mat(0xa8543a)), 0, y, 0));
+  put(locB, cone(.9, 1.6, 4, mat(0xa8543a)), 0, 7.6, 0).rotation.y = Math.PI / 4;
+  put(locB, ico(.25, 1, GOLD), 0, 8.55, 0);
+  // marigold torans between pillars
+  const mg = [mat(0xff9a1a, { emissive: 0x4a2000 }), mat(0xffcc2a, { emissive: 0x4a3000 })];
+  [[-3, -3, 3, -3], [-3, 3, 3, 3], [-3, -3, -3, 3], [3, -3, 3, 3]].forEach(([x1, z1, x2, z2]) => {
+    for (let k = 0; k <= 22; k++) { const t = k / 22; put(locB, ico(.09, 0, mg[k % 2]), lerp(x1, x2, t), 4.3 - Math.sin(t * Math.PI) * .9, lerp(z1, z2, t)); }
+  });
+  // kalash pots, ghee vessel
+  [[-1.7, 1.4], [1.7, 1.4], [-1.6, -1.6]].forEach(([x, z]) => { put(locB, ico(.28, 1, mat(0xc4762e, { metalness: .5, roughness: .4 })), x, .3, z); put(locB, cone(.18, .3, 6, mat(0x5f8a3a)), x, .65, z); put(locB, ico(.12, 0, mat(0xc89a40)), x, .85, z); });
+  brahmaSeated.root.position.set(0, 0, 2.3); brahmaSeated.root.rotation.y = Math.PI; locB.add(brahmaSeated.root);
+  // two attendant rishis
+  [[-2.1, 0, 1.2, 2.2], [2.1, 0, 1.2, -2.2]].forEach(([x, y, z, ry]) => { const r = buildFigure({ skin: 0xc58a58, cloth: 0xe8862a, scale: .85, beard: BEARD }); r.lower.visible = false; r.upper.position.y = .3;
+    put(r.body, cyl(.55, .62, .28, 8, r.cloth), 0, .14, .05); pose(r, 'offer'); r.root.position.set(x, y, z); r.root.rotation.y = ry; locB.add(r.root); });
+}
+
+/* ============ LOCATION C — Pushkar lake & the Brahma temple ============ */
+const locC = new THREE.Group(); scene.add(locC);
+let pushkarLight, lakeM;
+{
+  const g = new THREE.PlaneGeometry(240, 240, 80, 80); g.rotateX(-Math.PI / 2);
+  const p = g.attributes.position;
+  for (let i = 0; i < p.count; i++) { const x = p.getX(i), z = p.getZ(i); const d = Math.hypot(x, z * 1.2);
+    p.setY(i, d < 10 ? -.6 : (Math.random() - .5) * .2 + Math.max(0, d - 26) * .12 * (1.2 + Math.sin(x * .15) * Math.cos(z * .12))); }
+  g.computeVertexNormals();
+  const sand = new THREE.Mesh(g, mat(0xb07a4a, { roughness: 1 })); sand.receiveShadow = true; locC.add(sand);
+  lakeM = mat(0x2e6a7a, { roughness: .15, metalness: .35, emissive: 0x2a1408, emissiveIntensity: .4 });
+  const lake = new THREE.Mesh(new THREE.CircleGeometry(10.5, 28).rotateX(-Math.PI / 2), lakeM); lake.position.y = -.25; lake.receiveShadow = true; locC.add(lake);
+  // ghats: stepped arcs around the lake
+  const ghat = mat(0xe8d6bc, { roughness: .85 });
+  for (let k = 0; k < 6; k++) { const r = 10.5 + k * .55;
+    const tread = new THREE.Mesh(new THREE.RingGeometry(r, r + .58, 40, 1, Math.PI * .05, Math.PI * 1.9).rotateX(-Math.PI / 2), ghat); tread.position.y = -.15 + k * .2; tread.receiveShadow = true; locC.add(tread);
+    const riser = new THREE.Mesh(new THREE.CylinderGeometry(r, r, .2, 40, 1, true, Math.PI * .55, Math.PI * 1.9), mat(0xcdb898, { side: THREE.DoubleSide })); riser.position.y = -.25 + k * .2; locC.add(riser); }
+  // whitewashed lakeside houses with little domes and chhatris
+  for (let i = 0; i < 22; i++) { const a = Math.PI * .6 + i / 22 * Math.PI * 1.8; const r = 15.5 + (i % 3) * 1.2;
+    const h = 1.2 + Math.random() * 2.2; const w = 1 + Math.random() * 1.2;
+    const hm = put(locC, box(w, h, w, mat([0xf0e4d2, 0xe9c9a6, 0xd9b0a0, 0xc7d4dc][i % 4])), Math.sin(a) * r, h / 2 + .9, Math.cos(a) * r); hm.rotation.y = a;
+    if (i % 3 === 0) { put(locC, ico(w * .32, 1, mat(0xf4ece0)), Math.sin(a) * r, h + 1, Math.cos(a) * r).scale.y = .8; } }
+  // the Brahma temple
+  const T = new THREE.Group(); T.position.set(0, 0, -21); locC.add(T);
+  const red = mat(0xb5372e, { roughness: .7 }), white = mat(0xf0e6d8);
+  put(T, box(10, 1.4, 8, white), 0, .7, 0);
+  for (let k = 0; k < 6; k++) put(T, box(4, .2, .6, white), 0, .1 + k * .22, 4.3 + (5 - k) * .45 - 2.4);
+  put(T, box(3.4, 3, 3.4, white), 0, 2.9, 1.6); put(T, ico(1.5, 1, white), 0, 4.7, 1.6).scale.y = .7;
+  put(T, box(3.8, 3.2, 3.8, red), 0, 3, -1.5);
+  const tiers = 9; for (let k = 0; k < tiers; k++) { const t = k / tiers; const r = lerp(2.5, .7, Math.pow(t, .8));
+    const m = put(T, cyl(r * .92, r, .9, 4, k % 2 ? red : mat(0xc94a38)), 0, 4.6 + k * .85, -1.5); m.rotation.y = Math.PI / 4; }
+  const am = put(T, cyl(.75, .75, .28, 12, mat(0xe8c27b)), 0, 12.4, -1.5);
+  put(T, ico(.32, 1, GOLD), 0, 12.85, -1.5); put(T, cyl(.025, .025, 2, 4, mat(0x3a2a1a)), 0, 13.9, -1.5);
+  const flag = put(T, cone(.5, 1.2, 3, mat(0xff8a1a, { emissive: 0x401800 })), .55, 14.5, -1.5); flag.rotation.z = -Math.PI / 2; flag.scale.z = .1; T.userData.flag = flag;
+  // the hamsa on the gate
+  const hamsa = new THREE.Group(); hamsa.position.set(0, 5.3, 3.4); T.add(hamsa);
+  put(hamsa, ico(.35, 0, mat(0xf8f4ec)), 0, 0, 0).scale.set(1, .7, 1.5); put(hamsa, cyl(.06, .08, .5, 5, mat(0xf8f4ec)), 0, .35, .4); put(hamsa, cone(.06, .18, 4, mat(0xff9a1a)), 0, .58, .62).rotation.x = Math.PI / 2;
+  // Aravalli ridgeline + sun
+  for (let i = 0; i < 18; i++) { const x = -90 + i * 11 + Math.random() * 6; const h = 10 + Math.random() * 16;
+    const m = cone(10 + Math.random() * 8, h, 5, mat(i % 2 ? 0x8a5a44 : 0x9e6a4a, { roughness: 1 })); jitter(m.geometry, 1.5); m.position.set(x, h / 2 - 2, -70 - Math.random() * 25); locC.add(m); }
+  pushkarLight = new THREE.PointLight(C(0xffb070), 2.5, 40, 1.6); pushkarLight.position.set(0, 8, -8); locC.add(pushkarLight);
+  // diyas floating on the lake
+  for (let i = 0; i < 26; i++) { const d = glowSprite(0xffa040, .55, .9); const a = Math.random() * Math.PI * 2, r = 1.5 + Math.random() * 8; d.position.set(Math.cos(a) * r, -.15, Math.sin(a) * r); locC.add(d); }
+}
+
+/* ---------------- audio (WebAudio, synthesized) ---------------- */
+let AC = null, master = null, musicGain = null;
+function initAudio() {
+  if (AC) return; try { AC = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return; }
+  master = AC.createGain(); master.gain.value = .7; master.connect(AC.destination);
+  musicGain = AC.createGain(); musicGain.gain.value = musicOn ? 1 : 0; musicGain.connect(master);
+  const lp = AC.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 520; lp.Q.value = 2;
+  const dg = AC.createGain(); dg.gain.value = .05; lp.connect(dg); dg.connect(musicGain);
+  [[73.4, 'sawtooth'], [73.7, 'sawtooth'], [110, 'triangle'], [146.8, 'sine'], [36.7, 'sine']].forEach(([f, t]) => { const o = AC.createOscillator(); o.type = t; o.frequency.value = f; o.connect(lp); o.start(); });
+  const lfo = AC.createOscillator(); lfo.frequency.value = .07; const lg = AC.createGain(); lg.gain.value = 260; lfo.connect(lg); lg.connect(lp.frequency); lfo.start();
+}
+function env(node, t0, a, peak, d) { node.gain.setValueAtTime(0.0001, t0); node.gain.exponentialRampToValueAtTime(peak, t0 + a); node.gain.exponentialRampToValueAtTime(0.0001, t0 + a + d); }
+function bell(f = 660, amt = .12) { if (!AC || !musicOn) return; const t = AC.currentTime; [1, 2.76, 5.4].forEach((m, i) => { const o = AC.createOscillator(), g = AC.createGain(); o.frequency.value = f * m; o.connect(g); g.connect(musicGain); env(g, t, .005, amt / (i + 1), 3.2 / (i + 1)); o.start(t); o.stop(t + 4); }); }
+function noiseBuf(sec) { const b = AC.createBuffer(1, AC.sampleRate * sec, AC.sampleRate); const d = b.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; return b; }
+function boom(amt = .7) { if (!AC || !musicOn) return; const t = AC.currentTime; const o = AC.createOscillator(), g = AC.createGain(); o.type = 'sine'; o.frequency.setValueAtTime(90, t); o.frequency.exponentialRampToValueAtTime(28, t + 1.6); o.connect(g); g.connect(musicGain); env(g, t, .02, amt, 2.2); o.start(t); o.stop(t + 2.5);
+  const n = AC.createBufferSource(); n.buffer = noiseBuf(2.5); const f = AC.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 380; const ng = AC.createGain(); n.connect(f); f.connect(ng); ng.connect(musicGain); env(ng, t, .03, amt * .6, 2); n.start(t); }
+function damaru(n = 8) { if (!AC || !musicOn) return; const t = AC.currentTime; for (let i = 0; i < n; i++) { const s = AC.createBufferSource(); s.buffer = noiseBuf(.15); const f = AC.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = i % 2 ? 900 : 650; f.Q.value = 3; const g = AC.createGain(); s.connect(f); f.connect(g); g.connect(musicGain); env(g, t + i * .085, .004, .25, .09); s.start(t + i * .085); } }
+function whoosh() { if (!AC || !musicOn) return; const t = AC.currentTime; const s = AC.createBufferSource(); s.buffer = noiseBuf(1); const f = AC.createBiquadFilter(); f.type = 'bandpass'; f.Q.value = 1.5; f.frequency.setValueAtTime(400, t); f.frequency.exponentialRampToValueAtTime(4000, t + .35); const g = AC.createGain(); s.connect(f); f.connect(g); g.connect(musicGain); env(g, t, .05, .5, .5); s.start(t); }
+function shankh() { if (!AC || !musicOn) return; const t = AC.currentTime; const o = AC.createOscillator(); o.type = 'sawtooth'; o.frequency.setValueAtTime(196, t); o.frequency.linearRampToValueAtTime(220, t + .6);
+  const v = AC.createOscillator(); v.frequency.value = 5; const vg = AC.createGain(); vg.gain.value = 3; v.connect(vg); vg.connect(o.frequency);
+  const f = AC.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 1100; const g = AC.createGain(); o.connect(f); f.connect(g); g.connect(musicGain);
+  g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.12, t + .7); g.gain.setValueAtTime(.12, t + 2.6); g.gain.exponentialRampToValueAtTime(.0001, t + 3.6); o.start(t); v.start(t); o.stop(t + 3.8); v.stop(t + 3.8); }
+
+/* ---------------- voice (Web Speech, Hindi) ---------------- */
+let voiceOn = true, musicOn = true, hiVoice = null, speaking = false, spokenScene = -1;
+const synth = window.speechSynthesis;
+function pickVoice() {
+  if (!synth) { $('voiceNote').textContent = 'इस ब्राउज़र में आवाज़ उपलब्ध नहीं, उपशीर्षक चलेंगे'; return; }
+  const vs = synth.getVoices();
+  hiVoice = vs.find(v => /hi[-_]IN/i.test(v.lang) && /google/i.test(v.name)) || vs.find(v => /^hi/i.test(v.lang)) || null;
+  $('voiceNote').textContent = hiVoice ? 'हिंदी आवाज़: ' + hiVoice.name : (vs.length ? 'हिंदी आवाज़ नहीं मिली, उपशीर्षक देखें' : '');
+}
+if (synth) { pickVoice(); synth.onvoiceschanged = pickVoice; }
+function speak(text) {
+  if (!synth || !voiceOn) return;
+  synth.cancel(); speaking = false;
+  const u = new SpeechSynthesisUtterance(text.replace(/[“”"]/g, ''));
+  u.lang = 'hi-IN'; if (hiVoice) u.voice = hiVoice; u.rate = .93; u.pitch = .92;
+  u.onstart = () => { speaking = true; }; u.onend = u.onerror = () => { speaking = false; };
+  synth.speak(u);
+}
+function hush() { if (synth) synth.cancel(); speaking = false; }
+
+/* ---------------- story state ---------------- */
+const P = {
+  shivaIn: [0, 0, -3.3],
+  vishnu: [-2.9, 0, .2], brahma: [2.9, 0, .2],
+  ketaki: [3.75, 2.45, 1.25],
+  bhIn: [0, 0, -6], bhOut: [.9, 0, -2.2], bhNear: [1.9, 0, -1.25], bhSolo: [0, 0, -1.5],
+};
+let S;
+function resetState() {
+  S = { loc: 'A', shivaEmerge: 1, anger: 0, bhairav: 0, bhPos: P.bhOut.slice(), bhRot: 0, bhPose: ['roar', 'roar', 1], bhHeadBack: 0,
+    cut: 0, headFly: 0, brahmaRot: -1.75, headStuck: false, ketakiTalk: 0, ketakiFall: 0, showKetaki: true, vishnuPose: ['rest', 'rest', 1], vishnuBow: .6,
+    shivaPose: ['trishul', 'trishul', 1], brahmaTremble: 0, brahmaDown: .55, brahmaPose: ['hold', 'hold', 1], bless: 0, shake: 0, shock: -1, slash: -1,
+    showShiva: true, showVishnu: true, showBrahma: true, showBhairav: false, dark: 0, fade: 1, pillarAmt: 1, shivaAura: .25,
+    cam: new THREE.Vector3(0, 3, 12), look: new THREE.Vector3(0, 2, -2), focus: null, aperture: .0016 };
+}
+const v3 = a => new THREE.Vector3(a[0], a[1], a[2]);
+function shot(p, a, b, la, lb, e = ease) { const k = e(p); S.cam.lerpVectors(v3(a), v3(b), k); S.look.lerpVectors(v3(la), v3(lb), k); }
+function orbit(p, center, r, y, a0, a1, lookY) { const a = lerp(a0, a1, ease(p)); S.cam.set(center[0] + Math.sin(a) * r, y, center[2] + Math.cos(a) * r); S.look.set(center[0], lookY, center[2]); }
+
+const SCENES = [
+  { dur: 6, chapter: 'आरंभ', text: '', run(p) {
+      S.shivaEmerge = 0; S.showKetaki = false;
+      shot(p, [0, 1.2, 24], [0, 2.6, 17], [0, 14, -6], [0, 7, -6]); S.aperture = .0008;
+    }, enter() { bell(392, .1); } },
+  { dur: 7, chapter: 'पिछले भाग में', text: 'पिछली बार आपने देखा था कि अग्नि-स्तंभ से महादेव प्रकट हुए,', run(p) {
+      S.shivaEmerge = ease(seg(p, .1, .85)); S.shivaAura = .25 + (1 - S.shivaEmerge) * .8; S.showKetaki = false;
+      shot(p, [0, 1.0, 11], [0, 2.0, 7.8], [0, 4.5, -4.5], [0, 2.9, -3.3]);
+    }, enter() { damaru(10); } },
+  { dur: 8, chapter: 'पिछले भाग में', text: 'और उनके सामने विष्णु जी सिर झुकाए खड़े थे, जबकि ब्रह्मा जी की नज़रें झुकी हुई थीं।', run(p) {
+      S.vishnuPose = ['rest', 'namaste', ease(seg(p, .1, .5))]; S.vishnuBow = .6 + seg(p, .1, .5) * .4; S.brahmaDown = .55 + seg(p, .45, .8) * .45;
+      orbit(p, [0, 0, -.6], 10.5, 3.4, -.55, .55, 1.9);
+    } },
+  { dur: 7, chapter: 'प्रश्न', speaker: 'महादेव', text: 'महादेव ने ब्रह्मा जी से पूछा, “क्या तुमने सच में स्तंभ का शिखर देखा था?”', run(p) {
+      S.vishnuPose = ['namaste', 'namaste', 1]; S.vishnuBow = 1; S.brahmaDown = 1;
+      S.shivaPose = ['trishul', 'point', ease(seg(p, .15, .45))];
+      shot(p, [3.9, 1.5, 4.6], [3.4, 1.45, 3.7], [0, 3.2, -3.3], [0, 3.05, -3.3]);
+    }, enter() { bell(523, .08); } },
+  { dur: 6.5, chapter: 'असत्य', text: 'ब्रह्मा जी काँप गए, फिर भी अपनी बात पर अड़े रहे,', run(p) {
+      S.vishnuPose = ['namaste', 'namaste', 1]; S.vishnuBow = 1; S.shivaPose = ['point', 'trishul', ease(seg(p, 0, .3))];
+      S.brahmaTremble = seg(p, .05, .2) * (1 - seg(p, .6, .8) * .6); S.brahmaDown = lerp(1, .1, ease(seg(p, .55, .85)));
+      S.brahmaPose = ['hold', 'tremble', ease(seg(p, .0, .3))];
+      shot(p, [.9, 2.4, 2.6], [1.35, 2.3, 2.0], [2.9, 2.45, .2], [2.9, 2.4, .2]);
+    } },
+  { dur: 7, chapter: 'केतकी की गवाही', speaker: 'केतकी पुष्प', text: 'और केतकी का फूल भी बोल पड़ा, “हाँ प्रभु, ये सच कह रहे हैं।”', run(p) {
+      S.vishnuPose = ['namaste', 'namaste', 1]; S.vishnuBow = 1; S.brahmaDown = .1; S.brahmaPose = ['tremble', 'tremble', 1];
+      S.ketakiTalk = seg(p, .3, .95);
+      shot(p, [2.2, 2.65, 4.4], [2.6, 2.55, 3.6], [3.75, 2.5, 1.25], [3.75, 2.45, 1.25]); S.aperture = .0035;
+    } },
+  { dur: 6, chapter: 'क्रोध', speaker: '', text: 'यह सुनते ही महादेव की आँखें लाल हो उठीं।', run(p) {
+      S.vishnuPose = ['namaste', 'namaste', 1]; S.vishnuBow = 1; S.brahmaDown = .4; S.brahmaPose = ['tremble', 'tremble', 1];
+      S.anger = ease(seg(p, .2, .7)); S.shake = S.anger * .015;
+      shot(p, [0, 3.1, 2.2], [0, 3.15, .3], [0, 3.15, -3.3], [0, 3.2, -3.3], easeOut); S.aperture = .003;
+    }, enter() { boom(.35); } },
+  { dur: 9, chapter: 'भैरव', text: 'उनके क्रोध से एक भयंकर रूप प्रकट हुआ, भैरव, जिसकी हुंकार से दिशाएँ काँप उठीं।', run(p) {
+      S.vishnuPose = ['namaste', 'namaste', 1]; S.vishnuBow = 1; S.brahmaDown = .3; S.brahmaPose = ['tremble', 'tremble', 1];
+      S.anger = 1; S.showBhairav = true; const e = ease(seg(p, .05, .45)); S.bhairav = e;
+      S.bhPos = [lerp(P.bhIn[0], P.bhOut[0], e), 0, lerp(P.bhIn[2], P.bhOut[2], e)]; S.bhRot = 0;
+      S.bhPose = ['rest', 'roar', ease(seg(p, .4, .52))]; S.bhHeadBack = seg(p, .45, .55) * (1 - seg(p, .8, .95));
+      S.shock = seg(p, .5, .95); S.shake = (p > .5 && p < .85 ? .09 * (1 - seg(p, .5, .85)) : 0) + .01;
+      shot(p, [0, 1.4, 10], [0, 1.15, 7.4], [.5, 2.8, -3], [.8, 2.7, -2.2]);
+    }, enter() { boom(.5); setTimeout(() => boom(.9), 4200); damaru(14); } },
+  { dur: 9.5, chapter: 'दंड', text: 'शिव जी के आदेश पर भैरव ने ब्रह्मा जी का वह पाँचवाँ सिर काट दिया, जिससे झूठ निकला था।', run(p) {
+      S.vishnuPose = ['namaste', 'namaste', 1]; S.vishnuBow = 1; S.brahmaPose = ['tremble', 'tremble', 1]; S.brahmaDown = .3;
+      S.anger = 1; S.showBhairav = true; S.bhairav = 1; S.shivaPose = ['trishul', 'point', ease(seg(p, 0, .15))];
+      const m = ease(seg(p, .1, .4)); S.bhPos = [lerp(P.bhOut[0], P.bhNear[0], m), 0, lerp(P.bhOut[2], P.bhNear[2], m)]; S.bhRot = lerp(0, .62, m);
+      if (p < .42) S.bhPose = ['roar', 'swordUp', ease(seg(p, .15, .42))];
+      else if (p < .56) S.bhPose = ['swordUp', 'swordDown', ease(seg(p, .48, .54))];
+      else S.bhPose = ['swordDown', 'carryHead', ease(seg(p, .62, .82))];
+      S.cut = p > .52 ? 1 : 0; S.headFly = ease(seg(p, .53, .8)); S.slash = seg(p, .51, .66); S.shake = p > .52 && p < .62 ? .06 : .008;
+      S.brahmaTremble = p > .52 ? .8 : .3;
+      shot(p, [6.8, 2.5, 4.9], [5.6, 2.7, 3.9], [2.3, 2.7, -.4], [2.4, 2.9, -.5]);
+    }, enter() { whoosh(); setTimeout(() => { boom(.6); bell(330, .14); }, 4900); } },
+  { dur: 7, chapter: 'विनती', speaker: 'श्री विष्णु', text: 'तब विष्णु जी ने हाथ जोड़कर कहा, “प्रभु, ब्रह्मा को क्षमा कर दें।”', run(p) {
+      S.anger = 1 - seg(p, .7, 1) * .3; S.showBhairav = true; S.bhairav = 1; S.bhPos = P.bhNear; S.bhRot = .62; S.bhPose = ['carryHead', 'carryHead', 1];
+      S.cut = 1; S.headFly = 1; S.brahmaDown = 1; S.brahmaPose = ['tremble', 'tremble', 1];
+      S.vishnuPose = ['namaste', 'namaste', 1]; S.vishnuBow = .7 + Math.sin(p * Math.PI) * .5;
+      shot(p, [.7, 2.5, 3.9], [.1, 2.35, 3.3], [-2.9, 2.3, .2], [-2.9, 2.25, .2]); S.aperture = .0024;
+    } },
+  { dur: 7, chapter: 'निर्णय', speaker: 'महादेव', text: 'महादेव का क्रोध शांत हुआ और उन्होंने कहा, “झूठ की सज़ा तो मिलेगी।”', run(p) {
+      S.anger = .7 * (1 - ease(seg(p, 0, .55))); S.showBhairav = true; S.bhairav = 1; S.bhPos = P.bhNear; S.bhRot = .62; S.bhPose = ['carryHead', 'carryHead', 1];
+      S.cut = 1; S.headFly = 1; S.vishnuPose = ['namaste', 'namaste', 1]; S.vishnuBow = 1; S.brahmaDown = 1;
+      S.shivaPose = ['point', 'abhaya', ease(seg(p, .15, .5))];
+      shot(p, [0, 1.9, 6.2], [0, 2.3, 4.6], [0, 2.9, -3.3], [0, 3.0, -3.3]);
+    }, enter() { bell(587, .1); } },
+  { dur: 10, chapter: 'निर्णय', speaker: 'महादेव', text: '“ब्रह्मा की पूजा अलग से नहीं होगी, और केतकी मेरी पूजा में कभी नहीं चढ़ेगी।”', run(p) {
+      S.showBhairav = true; S.bhairav = 1; S.bhPos = P.bhNear; S.bhRot = .62; S.bhPose = ['carryHead', 'carryHead', 1];
+      S.cut = 1; S.headFly = 1; S.vishnuPose = ['namaste', 'namaste', 1]; S.vishnuBow = 1; S.brahmaDown = 1; S.shivaPose = ['abhaya', 'abhaya', 1];
+      S.ketakiFall = ease(seg(p, .5, .95));
+      shot(p, [-1.5, 4.6, 11.5], [-.8, 4.1, 9.8], [-1, 1.8, -1], [-.6, 1.9, -1]); S.aperture = .0009;
+    } },
+  { dur: 6.5, chapter: 'वरदान', speaker: 'महादेव', text: '“पर यज्ञों में ब्रह्मा का स्थान सदा रहेगा।”', run(p) {
+      S.showBhairav = true; S.bhairav = 1; S.bhPos = P.bhNear; S.bhRot = .62; S.bhPose = ['carryHead', 'carryHead', 1];
+      S.cut = 1; S.headFly = 1; S.vishnuPose = ['namaste', 'namaste', 1]; S.vishnuBow = .8; S.ketakiFall = 1; S.showKetaki = false;
+      S.shivaPose = ['abhaya', 'bless', ease(seg(p, .05, .35))]; S.bless = ease(seg(p, .2, .6)); S.brahmaDown = lerp(1, .2, ease(seg(p, .3, .7)));
+      S.brahmaPose = ['tremble', 'namaste', ease(seg(p, .25, .6))];
+      S.brahmaRot = lerp(-1.75, -.75, ease(seg(p, .1, .5)));
+      shot(p, [2.2, 2.3, 4.6], [2.5, 2.4, 3.8], [2.9, 2.5, .2], [2.9, 2.55, .2]); S.aperture = .0022;
+    }, enter() { bell(784, .1); } },
+  { dur: 8, chapter: 'आज भी', text: 'इसीलिए आज भी यज्ञ में ब्रह्मा पुरोहित बनकर बैठते हैं,', run(p) {
+      S.loc = 'B'; orbit(p, [0, 0, 0], 8.2, 3.2, .95, .25, 1.3); S.aperture = .0012;
+    }, enter() { bell(440, .12); } },
+  { dur: 9.5, chapter: 'आज भी', text: 'पर उनके मंदिर गिनती के ही हैं, जिनमें सबसे प्रसिद्ध राजस्थान का पुष्कर है।', run(p) {
+      S.loc = 'C'; shot(p, [-6, 5.5, 18], [-1, 3.2, -2], [0, 6, -21], [0, 8, -21]); S.aperture = .0006;
+    }, enter() { shankh(); } },
+  { dur: 11, chapter: 'रहस्य', text: 'लेकिन भैरव का क्या हुआ? ब्रह्मा जी का वह कटा हुआ सिर उनके हाथ से चिपक गया और छूटने का नाम ही नहीं लिया।', run(p) {
+      S.showShiva = false; S.showVishnu = false; S.showBrahma = false; S.showKetaki = false; S.dark = 1; S.pillarAmt = .2;
+      S.showBhairav = true; S.bhairav = 1; S.bhPos = P.bhSolo; S.bhRot = 0; S.headFly = 1; S.headStuck = true; S.cut = 1;
+      S.bhPose = ['carryHead', 'holdHead', ease(seg(p, .3, .6))];
+      orbit(p, [0, 0, -1.5], 5.4, 2.6, -.75, .55, 3.0); S.aperture = .0028;
+    }, enter() { boom(.3); } },
+  { dur: 7.5, chapter: 'अगला भाग', text: 'यह कहानी जानिए अगले भाग में। हर हर महादेव!', run(p) {
+      S.showShiva = false; S.showVishnu = false; S.showBrahma = false; S.showKetaki = false; S.dark = 1; S.pillarAmt = .2 + seg(p, .3, 1) * .35;
+      S.showBhairav = true; S.bhairav = 1; S.bhPos = P.bhSolo; S.bhRot = 0; S.headFly = 1; S.headStuck = true; S.cut = 1; S.bhPose = ['holdHead', 'holdHead', 1];
+      shot(p, [0, 2.9, 6.5], [0, 4.2, 13], [0, 3.1, -1.5], [0, 5, -3]);
+    }, enter() { damaru(12); shankh(); } },
+];
+const starts = []; let TOTAL = 0; SCENES.forEach(s => { starts.push(TOTAL); TOTAL += s.dur; });
+
+/* ---------------- apply state to the world ---------------- */
+const tmpV = new THREE.Vector3(), tmpV2 = new THREE.Vector3();
+const SKY = {
+  A: { top: 0x1b1030, mid: 0xb4583a, bot: 0x1a0c12, neb: 0x8a3a6a, fog: 0x2a1420, fogD: .018, stars: 1, sun: 0 },
+  Akrodha: { top: 0x2a0606, mid: 0xa01a10, bot: 0x120404, neb: 0xb0201a, fog: 0x3a0a08, fogD: .032 },
+  Adark: { top: 0x07040c, mid: 0x3a1020, bot: 0x050306, neb: 0x401028, fog: 0x0c0508, fogD: .05, stars: 1 },
+  B: { top: 0x2c2448, mid: 0xd77a45, bot: 0x2a1a14, neb: 0x6a3a5a, fog: 0x3a2420, fogD: .035, stars: .5, sun: 0 },
+  C: { top: 0x3a4a78, mid: 0xf09a5a, bot: 0x6a4a3a, neb: 0xd08a6a, fog: 0xc88a62, fogD: .006, stars: 0, sun: 1 },
+};
+const cA = new THREE.Color(), cB = new THREE.Color();
+function mixSky(a, b, t, key) { cA.copy(C(a[key])); cB.copy(C(b[key] ?? a[key])); return cA.lerp(cB, t); }
+function applySky(t) {
+  let a = SKY[S.loc], b = a, k = 0;
+  if (S.loc === 'A') { if (S.dark > 0) { b = SKY.Adark; k = S.dark; } else if (S.anger > 0) { b = SKY.Akrodha; k = S.anger; } }
+  const u = sky.material.uniforms;
+  u.top.value.copy(mixSky(a, b, k, 'top')); u.mid.value.copy(mixSky(a, b, k, 'mid')); u.bot.value.copy(mixSky(a, b, k, 'bot')); u.neb.value.copy(mixSky(a, b, k, 'neb'));
+  u.stars.value = lerp(a.stars ?? 1, b.stars ?? 1, k); u.sunAmt.value = a.sun || 0; u.time.value = t;
+  u.sun.value.set(.25, .06, -1);
+  scene.fog.color.copy(mixSky(a, b, k, 'fog')); scene.fog.density = lerp(a.fogD, b.fogD, k);
+}
+
+function applyState(t) {
+  locA.visible = S.loc === 'A'; locB.visible = S.loc === 'B'; locC.visible = S.loc === 'C';
+  applySky(t);
+  // lighting mood
+  const anger = S.anger, dark = S.dark;
+  RIM.color.value.copy(C(0xffa65a)).lerp(C(0xff2a14), anger).lerp(C(0xff3a1a), dark * .6);
+  RIM.strength.value = 1 + anger * .6;
+  if (S.loc === 'C') { key.color.copy(C(0xffc89a)); key.intensity = 2.2; key.position.set(-14, 10, -18); hemi.intensity = .9; back.intensity = .6; }
+  else if (S.loc === 'B') { key.color.copy(C(0xffb88a)); key.intensity = 1.0; key.position.set(6, 12, 9); hemi.intensity = .5; back.intensity = 1.1; }
+  else { key.color.copy(C(0xffc28a)).lerp(C(0xff5a3a), anger); key.intensity = lerp(1.5, .35, dark); key.position.set(6, 12, 9); hemi.intensity = lerp(.55, .18, dark); back.intensity = 1.3; }
+  key.target.position.set(0, 0, S.loc === 'C' ? -6 : 0);
+  grade.uniforms.krodha.value = anger * (S.loc === 'A' ? 1 : 0);
+  grade.uniforms.fade.value = S.fade;
+
+  if (S.loc === 'A') {
+    // pillar
+    [pillarCore, pillarHalo].forEach(m => { m.material.uniforms.time.value = t; });
+    pillarCore.material.uniforms.c1.value.copy(C(0xff5a1a)).lerp(C(0xc0100a), anger);
+    pillarCore.material.uniforms.c3.value.copy(C(0xfff1c9)).lerp(C(0xffb08a), anger);
+    pillarCore.material.uniforms.intensity.value = 2.2 * S.pillarAmt; pillarHalo.material.uniforms.intensity.value = 2.2 * S.pillarAmt;
+    pillarLight.intensity = 4.5 * S.pillarAmt; pillarBase.material.opacity = .9 * S.pillarAmt;
+    locA.userData.rocks.forEach((r, i) => { r.rotation.x = t * r.userData.spin; r.rotation.y = t * r.userData.spin * .7; r.position.y = r.userData.by + Math.sin(t * .4 + i) * .4; });
+
+    // Shiva
+    shiva.root.visible = S.showShiva;
+    const e = S.shivaEmerge;
+    shiva.root.position.set(0, lerp(-.6, 0, e), lerp(-6, P.shivaIn[2], e));
+    shiva.aura.material.opacity = S.shivaAura + anger * .35; shiva.aura.material.color.copy(C(0xaecbff)).lerp(C(0xff4a2a), anger);
+    pose(shiva, ...S.shivaPose);
+    shiva.body.rotation.y = Math.sin(t * .5) * .03; shiva.upper.rotation.x = Math.sin(t * .9) * .01;
+    shiva.eyeM.emissive.copy(C(0xff2a10)).multiplyScalar(anger * 3.5);
+    shiva.thirdEyeM.emissiveIntensity = anger * 6; shiva.thirdEye.scale.y = lerp(.4, 1.9, anger);
+    shiva.head.rotation.x = lerp(.05, -.02, anger);
+    // trishul follows the left hand, stays upright
+    shiva.root.updateMatrixWorld(true);
+    shiva.armL.hand.getWorldPosition(tmpV); shiva.body.worldToLocal(tmpV); shiva.trishul.position.copy(tmpV).add(tmpV2.set(0, -.6, 0));
+
+    // Vishnu
+    vishnu.root.visible = S.showVishnu;
+    pose(vishnu, ...S.vishnuPose); vishnu.head.rotation.x = .1 + S.vishnuBow * .28; vishnu.upper.rotation.x = S.vishnuBow * .1;
+    vishnu.chakra.rotation.z = t * 3; vishnu.chakra.rotation.y = .4;
+
+    // Brahma
+    brahma.root.visible = S.showBrahma; brahma.root.rotation.y = S.brahmaRot;
+    pose(brahma, ...S.brahmaPose);
+    brahma.head.rotation.x = .08 + S.brahmaDown * .38;
+    const tr = S.brahmaTremble; brahma.body.position.x = Math.sin(t * 47) * .02 * tr; brahma.body.rotation.z = Math.sin(t * 39) * .02 * tr; brahma.head.rotation.z = Math.sin(t * 53) * .05 * tr;
+    blessGlow.material.opacity = S.bless * .9; blessGlow.scale.setScalar(4 + S.bless * 2 + Math.sin(t * 2) * .3);
+
+    // Ketaki
+    ketaki.visible = S.showKetaki && S.showBrahma;
+    const kf = S.ketakiFall;
+    ketaki.position.set(P.ketaki[0] + kf * .3, lerp(P.ketaki[1] + Math.sin(t * 1.3) * .08, .25, kf * kf), P.ketaki[2] + kf * .4);
+    ketaki.rotation.set(kf * 1.3, t * .4 * (1 - kf), kf * .6);
+    ketakiM.color.copy(C(0xf5ecd2)).lerp(C(0x6a5a48), kf); ketakiM.emissiveIntensity = .25 * (1 - kf) + S.ketakiTalk * .5 * (.5 + .5 * Math.sin(t * 9));
+    ketakiPetals.forEach((pv, i) => { pv.children[0].rotation.x = .32 + (i % 2) * .12 + kf * 1.1 + S.ketakiTalk * Math.sin(t * 8 + i) * .08; });
+    ketaki.glow.material.opacity = (.5 + S.ketakiTalk * .5) * (1 - kf);
+    ketaki.rings.forEach((r, i) => { const ph = ((t * .9 + i / 3) % 1); r.scale.setScalar(.6 + ph * 2.6); r.material.opacity = S.ketakiTalk * (1 - ph) * .8; });
+
+    // Bhairava
+    bhairav.root.visible = S.showBhairav;
+    if (S.showBhairav) {
+      const b = S.bhairav;
+      bhairav.root.position.set(S.bhPos[0], 0, S.bhPos[2]); bhairav.root.rotation.y = S.bhRot;
+      bhairav.root.scale.setScalar(lerp(.35, 1.6, b));
+      pose(bhairav, ...S.bhPose);
+      bhairav.head.rotation.x = -S.bhHeadBack * .35 + (S.headStuck ? .22 : 0);
+      bhairav.body.position.y = Math.sin(t * 2.2) * .015;
+      bhairav.flames.forEach((f, i) => { f.scale.y = f.userData.base * (1 + Math.sin(t * 13 + i * 1.7) * .2 + S.bhHeadBack * .5); });
+      bhairav.skin.emissiveIntensity = 1 + Math.sin(t * 3) * .4 + S.bhHeadBack * 2;
+      bhairav.aura.material.opacity = (.35 + S.bhHeadBack * .6 + (1 - b) * .6) * b + (1 - b) * .8;
+      bhairav.bladeM.emissiveIntensity = .25 + (S.slash > 0 && S.slash < 1 ? 3 : 0);
+      bhairavEmbers.visible = true;
+    }
+    // shockwaves
+    [shock, shock2].forEach((s, i) => { const q = clamp01(S.shock * 1.3 - i * .3); s.visible = S.shock >= 0 && q > 0 && q < 1;
+      s.scale.setScalar(1 + q * 22); s.material.opacity = (1 - q) * .9; });
+
+    // the fifth head: on Brahma, then flying, then stuck to Bhairava's left hand
+    locA.updateMatrixWorld(true);
+    brahma.fifthAnchor.getWorldPosition(tmpV);
+    fifth.visible = S.showBrahma || S.headFly > 0;
+    fifth.scale.setScalar(1.1);
+    if (S.headFly <= 0 || !S.cut) {
+      fifth.position.copy(tmpV); fifth.rotation.set(brahma.head.rotation.x * .5, brahma.root.rotation.y, 0);
+      fifth.visible = S.showBrahma;
+    } else {
+      bhairav.armL.hand.getWorldPosition(tmpV2); tmpV2.y += .05;
+      const k = S.headFly; fifth.position.lerpVectors(tmpV, tmpV2, k); fifth.position.y += Math.sin(k * Math.PI) * 1.4;
+      fifth.rotation.set(k * Math.PI * 2.2, brahma.root.rotation.y + k * 2, k * .6);
+      if (k >= 1) fifth.rotation.set(.3 + Math.sin(t * 1.3) * .03, S.bhRot + Math.PI * .85, .2);
+    }
+    const dim = S.cut ? clamp01(S.headFly) : 0;
+    fifth.userData.skin.color.copy(C(0xd99550)).lerp(C(0x9a8a80), dim * .7);
+    fifth.userData.skin.emissive.copy(C(0x5a1010)).multiplyScalar(dim * (S.headStuck ? .8 + Math.sin(t * 2.5) * .4 : .5));
+    fifthGlow.material.opacity = dim * (S.headStuck ? .55 + Math.sin(t * 2.5) * .25 : .3);
+    // slash arc
+    slash.visible = S.slash > 0 && S.slash < 1;
+    if (slash.visible) { brahma.fifthAnchor.getWorldPosition(tmpV); slash.position.copy(tmpV).add(tmpV2.set(-.1, -.25, 0)); slash.rotation.set(.3, .6, -.5 + S.slash * 1.4); slash.material.opacity = (1 - S.slash) * 1.2; slash.scale.setScalar(.8 + S.slash * .8); }
+  }
+  if (S.loc === 'B') {
+    pose(brahmaSeated, 'offer'); brahmaSeated.head.rotation.x = .25; brahmaSeated.fifthAnchor.visible = false;
+    yajnaFire.children.forEach((f, i) => { if (f.isMesh) { f.scale.y = 1 + Math.sin(t * 9 + f.userData.ph) * .25; f.scale.x = f.scale.z = 1 + Math.sin(t * 7 + i) * .1; f.rotation.y = t * .5 + i; } });
+    yajnaLight.intensity = 4.2 + Math.sin(t * 13) * .6 + Math.sin(t * 7.3) * .5;
+  }
+  if (S.loc === 'C') { lakeM.emissiveIntensity = .35 + Math.sin(t * .8) * .05; }
+  emberSystems.forEach(e => { if (e.parent && e.parent.visible !== false) e.userData.update(t); });
+
+  // camera
+  camera.position.copy(S.cam); camera.lookAt(S.look);
+  const sh = REDUCED ? S.shake * .2 : S.shake;
+  if (sh > 0) { camera.position.x += (Math.sin(t * 61) + Math.sin(t * 37)) * sh; camera.position.y += (Math.sin(t * 53) + Math.sin(t * 29)) * sh; }
+  sky.position.copy(camera.position);
+  bokeh.uniforms.focus.value = S.cam.distanceTo(S.look);
+  bokeh.uniforms.aperture.value = S.aperture;
+}
+
+/* ---------------- overlays ---------------- */
+const titleCard = $('titleCard'), nameFlash = $('nameFlash'), endCard = $('endCard'), flash = $('flash');
+const subEl = $('sub'), lineEl = $('line'), speakerEl = $('speaker'), chapterEl = $('chapter'), placeEl = $('place');
+const vEls = [$('v1'), $('v2'), $('v3')];
+function fmtLine(t) { return t.replace(/“([^”]+)”/g, '<em>“$1”</em>'); }
+function applyOverlays(i, p) {
+  const sc = SCENES[i];
+  titleCard.style.opacity = i === 0 ? (seg(p, .1, .35) * (1 - seg(p, .85, 1))).toFixed(3) : 0;
+  nameFlash.style.opacity = i === 7 ? (seg(p, .5, .56) * (1 - seg(p, .72, .85))).toFixed(3) : 0;
+  nameFlash.style.transform = 'scale(' + (1 + (i === 7 ? seg(p, .5, .85) * .12 : 0)) + ')';
+  endCard.style.opacity = i === 16 ? seg(p, .25, .5).toFixed(3) : 0;
+  let fl = 0; if (i === 8) fl = Math.max(0, 1 - Math.abs(p - .53) * 18); if (i === 7) fl = Math.max(0, 1 - Math.abs(p - .5) * 14) * .6;
+  flash.style.opacity = fl.toFixed(3);
+  subEl.style.opacity = sc.text ? Math.min(seg(p, 0, .06), i === 16 ? 1 - seg(p, .2, .3) : 1).toFixed(3) : 0;
+  chapterEl.style.opacity = i === 0 || i === 16 ? 0 : .85;
+  vEls[0].classList.toggle('on', (i === 11 && p > .08) || i === 12);
+  vEls[1].classList.toggle('on', (i === 11 && p > .48) || i === 12);
+  vEls[2].classList.toggle('on', i === 12 && p > .2);
+  placeEl.classList.toggle('on', (i === 13 && p > .1) || (i === 14 && p > .35));
+}
+let lastScene = -1;
+function enterScene(i) {
+  const sc = SCENES[i];
+  lineEl.innerHTML = fmtLine(sc.text);
+  speakerEl.hidden = !sc.speaker; speakerEl.textContent = sc.speaker || '';
+  speakerEl.dataset.tone = i === 6 ? 'krodha' : '';
+  chapterEl.innerHTML = 'शिव महापुराण · <b>' + sc.chapter + '</b>';
+  if (i === 13) { $('placeK').textContent = 'यज्ञ-मंडप'; $('placeV').textContent = 'ब्रह्मा जी, पुरोहित के आसन पर'; }
+  if (i === 14) { $('placeK').textContent = 'ब्रह्मा जी का सबसे प्रसिद्ध मंदिर'; $('placeV').textContent = 'पुष्कर, राजस्थान'; }
+}
+
+/* ---------------- transport ---------------- */
+let T = 0, playing = false, started = false, holdT = 0;
+const clock = new THREE.Clock();
+function sceneAt(t) { let i = SCENES.length - 1; for (let k = 0; k < SCENES.length; k++) { if (t < starts[k] + SCENES[k].dur) { i = k; break; } } return i; }
+function fmt(s) { s = Math.max(0, Math.floor(s)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
+function setPlaying(v) {
+  playing = v;
+  $('playTxt').textContent = v ? 'रोकें' : 'चलाएँ';
+  $('playIco').innerHTML = v ? '<path d="M5 3 H8 V17 H5 Z M12 3 H15 V17 H12 Z" fill="currentColor"/>' : '<path d="M5 3 L17 10 L5 17 Z" fill="currentColor"/>';
+  if (AC) v ? AC.resume() : AC.suspend();
+  if (!v) hush();
+  else if (lastScene >= 0 && T - starts[lastScene] < 1.2 && SCENES[lastScene].text) { speak(SCENES[lastScene].text); spokenScene = lastScene; }
+}
+function start() {
+  if (!started) { started = true; $('poster').hidden = true; initAudio(); if (T >= TOTAL - .05) T = 0; lastScene = -1; }
+  setPlaying(true);
+}
+$('bigPlay').addEventListener('click', start);
+$('playBtn').addEventListener('click', () => { if (!started) return start(); if (T >= TOTAL - .05) { T = 0; lastScene = -1; } setPlaying(!playing); });
+$('voiceBtn').addEventListener('click', () => { voiceOn = !voiceOn; $('voiceBtn').setAttribute('aria-pressed', voiceOn); if (!voiceOn) hush(); });
+$('musicBtn').addEventListener('click', () => { musicOn = !musicOn; $('musicBtn').setAttribute('aria-pressed', musicOn); if (musicGain) musicGain.gain.value = musicOn ? 1 : 0; });
+$('fsBtn').addEventListener('click', () => { const el = $('player'); try { if (document.fullscreenElement) document.exitFullscreen(); else el.requestFullscreen?.().catch(() => {}); } catch (e) {} });
+const track = $('track');
+track.innerHTML += starts.slice(1).map(s => `<div class="tick" style="left:${(s / TOTAL * 100).toFixed(2)}%"></div>`).join('');
+function seekTo(t) { T = Math.max(0, Math.min(TOTAL - .01, t)); hush(); lastScene = -1; holdT = 0; if (!started) { started = true; $('poster').hidden = true; initAudio(); setPlaying(true); } }
+track.addEventListener('pointerdown', e => { const r = track.getBoundingClientRect(); seekTo((e.clientX - r.left) / r.width * TOTAL); });
+track.addEventListener('keydown', e => { if (e.key === 'ArrowRight') seekTo(starts[Math.min(SCENES.length - 1, sceneAt(T) + 1)]); if (e.key === 'ArrowLeft') seekTo(starts[Math.max(0, sceneAt(T) - (T - starts[sceneAt(T)] < 1 ? 1 : 0))]); });
+document.addEventListener('keydown', e => { if (e.code === 'Space' && e.target === document.body) { e.preventDefault(); $('playBtn').click(); } });
+
+// deterministic preview hook: ?t=seconds renders that moment paused (used for stills)
+const qT = parseFloat((location.hash.match(/^#t(\d+(?:\.\d+)?)$/) || [])[1]);
+if (!isNaN(qT)) { T = qT; started = true; $('poster').hidden = true; }
+
+function frame() {
+  requestAnimationFrame(frame);
+  const dt = Math.min(clock.getDelta(), .1);
+  const i0 = sceneAt(T);
+  if (playing) {
+    const local = T - starts[i0];
+    // when narration runs longer than the shot, hold on the last beat until the voice finishes
+    const holding = voiceOn && speaking && spokenScene === i0 && local > SCENES[i0].dur - .35 && holdT < 14;
+    if (holding) holdT += dt; else { T += dt; }
+    if (T >= TOTAL) { T = TOTAL - .001; setPlaying(false); }
+  }
+  const i = sceneAt(T), local = T - starts[i], p = clamp01(local / SCENES[i].dur);
+  if (i !== lastScene) {
+    lastScene = i; holdT = 0; enterScene(i);
+    if (playing) { if (SCENES[i].text) { speak(SCENES[i].text); spokenScene = i; } SCENES[i].enter && SCENES[i].enter(); }
+  }
+  resetState(); SCENES[i].run(p); applyState(T);
+  applyOverlays(i, p);
+  grade.uniforms.time.value = T;
+  composer.render();
+  $('fill').style.width = (T / TOTAL * 100).toFixed(2) + '%';
+  track.setAttribute('aria-valuenow', Math.round(T / TOTAL * 100));
+  $('time').textContent = fmt(T) + ' / ' + fmt(TOTAL);
+}
+resize();
+frame();
+})();
+</script>
