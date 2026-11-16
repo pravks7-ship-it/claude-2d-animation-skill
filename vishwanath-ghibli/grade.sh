@@ -1,0 +1,2 @@
+# nostalgic film finish: soft bloom, warm gentle grade, light watercolour-paper texture, grain, soft vignette
+GRADE="[0:v]format=gbrp,split[a][b];[b]gblur=sigma=24[gl];[a][gl]blend=all_mode=screen:all_opacity=0.2[bl];[1:v]format=gbrp,scale=1920:1080[pp];[bl][pp]blend=all_mode=multiply:all_opacity=0.22[pa];[pa]format=yuv420p,curves=r='0/0.03 0.5/0.52 1/1':g='0/0.02 0.5/0.5 1/0.98':b='0/0.05 0.5/0.48 1/0.93',eq=saturation=1.04:contrast=0.98,noise=alls=4:allf=t,vignette=PI/6.5[v]"
