@@ -109,15 +109,38 @@ function f4a(t) {
   return cam(960, 540, lerp(1.0, 1.06, prog(t, 29.6, 32.5)), w) + vignette(.25) + titleAt(t, 31.0, 960, 190, 'ज्योतिर्लिंग', 170);
 }
 // F4b — wherever a fragment of that light touched the earth: the twelve jyotirlingas
+const LAND = [[150, 830], [330, 800], [480, 840], [620, 790], [770, 830], [900, 760], [1040, 800], [1180, 735], [1330, 790], [1480, 750], [1620, 820], [1780, 800]];
+const ORDER = [5, 0, 9, 3, 7, 1, 10, 4, 8, 2, 11, 6]; // fragment i lands at LAND[ORDER[i]]
+function panorama(t) {
+  let s = `<path d="M-400,700 Q0,620 400,690 T1200,640 T2320,690 L2320,1400 L-400,1400Z" fill="#8a5aa8" opacity=".55"/>`;
+  s += `<path d="M1000,740 L1180,520 L1260,600 L1380,470 L1520,640 L1600,560 L1760,760Z" fill="#dfe9f7" stroke="${OUT}" stroke-width="5" stroke-linejoin="round"/><path d="M1145,563 L1180,520 L1215,563 L1195,553 L1180,572 L1165,553Z M1340,520 L1380,470 L1420,520 L1400,510 L1380,532 L1360,510Z" fill="#fff" stroke="${OUT}" stroke-width="3.5" stroke-linejoin="round"/>`;
+  s += `<path d="M-400,760 Q200,720 700,770 T1500,750 T2320,770 L2320,1400 L-400,1400Z" fill="#7fbf5a" stroke="${OUT}" stroke-width="5"/>`;
+  s += `<path d="M-400,760 L260,760 Q300,900 180,1400 L-400,1400Z" fill="#3a7fd0" stroke="${OUT}" stroke-width="5" stroke-linejoin="round"/><path d="M1960,770 Q1880,900 1960,1400 L2320,1400 L2320,770Z" fill="#3a7fd0" stroke="${OUT}" stroke-width="5" stroke-linejoin="round"/>`;
+  for (let i = 0; i < 6; i++) s += `<path d="M${R(-300 + i * 90 + 12 * Math.sin(t * 2 + i))},${820 + (i % 3) * 50} q20,-12 40,0 t40,0" stroke="#e6f2ff" stroke-width="5" fill="none" stroke-linecap="round"/>`;
+  s += `<path d="M640,770 C700,860 560,940 720,1040 S900,1200 820,1400" stroke="${OUT}" stroke-width="60" fill="none"/><path d="M640,770 C700,860 560,940 720,1040 S900,1200 820,1400" stroke="#5fb0d8" stroke-width="46" fill="none"/>`;
+  for (let i = 0; i < 16; i++) { const x = 300 + rnd(i) * 1600; if (Math.abs(x - 700) < 90) continue; s += G(at(x, 880 + rnd(i + 3) * 260, .3 + rnd(i + 6) * .18), tree()); }
+  return s;
+}
 function f4b(t) {
-  const lit = lerp(0, 12, prog(t, 34.2, 39.4));
-  let w = skyGrad('skMap', '#1d3a8a', '#3a5ab8');
-  for (let i = 0; i < 60; i++) w += `<circle cx="${R(rnd(i) * 1920)}" cy="${R(rnd(i + 9) * 1080)}" r="${R(1.5 + rnd(i + 3) * 3)}" fill="#fff8d8" opacity="${R(.3 + .4 * Math.abs(Math.sin(t * 1.2 + i)))}"/>`;
-  w += mapPlace(t, lit);
-  const n = Math.min(12, Math.floor(lit + .001));
-  let ov = n > 0 && t < 39.8 ? G(at(1650, 520), `<circle r="110" fill="#fff6dc" stroke="${OUT}" stroke-width="8"/>` + txt(0, 34, String(n), 110, '#8f1420', { sw: 0 })) : '';
-  ov += titleAt(t, 39.8, 1500, 520, '१२ ज्योतिर्लिंग', 110);
-  return cam(960, 540, lerp(1.0, 1.04, prog(t, 32.5, 42.0)), w) + vignette(.3) + ov;
+  const T0 = 34.2, step = 5.2 / 12, src = [960, 210];
+  const fade = 1 - ease(prog(t, 39.5, 40.2));
+  let w = skyGrad('skL', '#1d3a8a', '#ff9a4a') + `<circle cx="960" cy="200" r="260" fill="#fff3a0" opacity="${R(.25 * fade)}" filter="url(#blur40)"/>`;
+  for (let i = 0; i < 50; i++) w += `<circle cx="${R(rnd(i) * 1920)}" cy="${R(rnd(i + 9) * 420)}" r="${R(1.5 + rnd(i + 3) * 3)}" fill="#fff8d8" opacity="${R(.25 + .4 * Math.abs(Math.sin(t * 1.2 + i)))}"/>`;
+  w += jyoti(t, 960, -500, 230, 130, fade) + panorama(t);
+  let n = 0;
+  for (let i = 0; i < 12; i++) {
+    const land = T0 + (i + .5) * step, dep = land - .55, [lx, ly] = LAND[ORDER[i]];
+    const u = prog(t, dep, land);
+    if (u > 0 && u < 1) { const x = lerp(src[0], lx, u), y = lerp(src[1], ly - 30, u) - 160 * Math.sin(u * Math.PI); for (let k = 1; k < 6; k++) { const v = clamp(u - k * .05); w += `<circle cx="${R(lerp(src[0], lx, v))}" cy="${R(lerp(src[1], ly - 30, v) - 160 * Math.sin(v * Math.PI))}" r="${R(11 - k * 1.6)}" fill="#fff3a0" opacity="${R(.7 - k * .12)}"/>`; } w += `<circle cx="${R(x)}" cy="${R(y)}" r="30" fill="#fff6c8" opacity=".85" filter="url(#blur8)"/><circle cx="${R(x)}" cy="${R(y)}" r="11" fill="#fffdf0"/>`; }
+    if (t >= land) {
+      n++; const d = t - land, p = backOut(clamp(d * 2.5));
+      if (d < .7) w += `<circle cx="${lx}" cy="${ly - 20}" r="${R(30 + d * 160)}" fill="none" stroke="#fff6c8" stroke-width="${R(8 * (1 - d / .7))}" opacity="${R(1 - d / .7)}"/>`;
+      w += `<rect x="${lx - 6}" y="${ly - 260}" width="12" height="240" fill="#fff6c8" opacity="${R(.35 + .15 * Math.sin(t * 3 + i))}" filter="url(#blur8)"/><circle cx="${lx}" cy="${ly - 34}" r="44" fill="#fff3a0" opacity=".5" filter="url(#blur8)"/>` + G(at(lx, ly, R(.36 * p)), shivling());
+    }
+  }
+  let ov = n > 0 && t < 39.9 ? G(at(1730, 160), `<circle r="90" fill="#fff6dc" stroke="${OUT}" stroke-width="8"/>` + txt(0, 30, String(n), 96, '#8f1420', { sw: 0 })) : '';
+  ov += titleAt(t, 39.8, 960, 200, '१२ ज्योतिर्लिंग', 150);
+  return cam(960, 540, lerp(1.0, 1.04, prog(t, 32.5, 42.0)), w) + vignette(.28) + ov;
 }
 // F5 — Kailash: "I want a home of our own"
 function f5(t) {
@@ -197,12 +220,26 @@ function f9b(t) {
   for (let i = 0; i < 6; i++) w += G(at(140 + i * 330, 930, .9), diya(t, i));
   return cam(960, 540, lerp(1.0, 1.06, prog(t, 92.9, 96.5)), w) + vignette(.25) + titleAt(t, 94.2, 960, 170, 'काशी विश्वनाथ', 150);
 }
-// F10a — of the twelve, Vishwanath is the most special
+// F10a — the garland of twelve (in the order of the Dvadasha Jyotirlinga Stotram); Vishwanath shines brightest
+const JNAMES = ['सोमनाथ', 'मल्लिकार्जुन', 'महाकालेश्वर', 'ओंकारेश्वर', 'वैद्यनाथ', 'भीमाशंकर', 'रामेश्वरम', 'नागेश्वर', 'विश्वनाथ', 'त्र्यंबकेश्वर', 'केदारनाथ', 'घृष्णेश्वर'];
 function f10a(t) {
-  let w = skyGrad('skMap2', '#1d3a8a', '#3a5ab8');
-  for (let i = 0; i < 60; i++) w += `<circle cx="${R(rnd(i) * 1920)}" cy="${R(rnd(i + 9) * 1080)}" r="${R(1.5 + rnd(i + 3) * 3)}" fill="#fff8d8" opacity="${R(.3 + .4 * Math.abs(Math.sin(t * 1.2 + i)))}"/>`;
-  w += mapPlace(t, 12, ease(prog(t, 97.6, 98.6)));
-  return cam(960, 540, lerp(1.0, 1.06, prog(t, 96.5, 102.4)), w) + vignette(.3) + popRibbon(t, 99.2, 102.2, 1500, 520, 'सबसे विशेष', 74, 380);
+  const CX = 960, CY = 560, RR = 310, hi = ease(prog(t, 97.6, 98.6)), app = prog(t, 96.4, 97.4);
+  let w = skyGrad('skMala', '#0d1a4a', '#2a4fb0');
+  for (let i = 0; i < 60; i++) w += `<circle cx="${R(rnd(i) * 1920)}" cy="${R(rnd(i + 9) * 1080)}" r="${R(1.5 + rnd(i + 3) * 3)}" fill="#fff8d8" opacity="${R(.25 + .4 * Math.abs(Math.sin(t * 1.2 + i)))}"/>`;
+  w += `<circle cx="${CX}" cy="${CY}" r="${RR}" fill="none" stroke="#ffc21a" stroke-width="6" stroke-dasharray="4 18" stroke-linecap="round" opacity=".7"/>`;
+  const orb = t * .9; w += `<circle cx="${R(CX + Math.cos(orb) * RR)}" cy="${R(CY + Math.sin(orb) * RR)}" r="16" fill="#fff6c8" opacity=".8" filter="url(#blur8)"/>`;
+  JNAMES.forEach((nm, i) => {
+    const a = -Math.PI / 2 + (i - 8) * Math.PI / 6, x = CX + Math.cos(a) * RR, y = CY + Math.sin(a) * RR, isK = i === 8;
+    const p = backOut(clamp(app * 12 - ((i - 8 + 12) % 12) * .6)); if (p <= 0) return;
+    const k = isK ? 1 + 1.1 * hi : 1, dim = isK ? 1 : 1 - .45 * hi;
+    let node = `<circle r="${R(58 * k)}" fill="${isK ? mix('#fff3a0', '#ffc21a', hi) : '#fff3a0'}" opacity="${R(.45 + .2 * hi * (isK ? 1 : 0))}" filter="url(#blur8)"/><circle r="${R(46 * k)}" fill="${isK ? mix('#3a2a6a', '#8f1420', hi) : '#3a2a6a'}" stroke="#ffc21a" stroke-width="${R(5 * k)}"/>` + G(`translate(0,${R(30 * k)}) scale(${R(.26 * k)})`, shivling());
+    if (isK && hi > 0) node = `<circle r="${R(110 + 14 * Math.sin(t * 4))}" fill="#fff3a0" opacity="${R(.45 * hi)}" filter="url(#blur20)"/>` + node;
+    const ly = Math.abs(y - CY) <= 10 ? 0 : -(66 * k), lx = Math.abs(y - CY) <= 10 ? (x < CX ? -150 : 150) : 0;
+    const lab = G(`translate(${lx},${ly})`, txt(0, 12, nm, isK ? R(34 + 14 * hi) : 32, isK ? '#ffe9b0' : '#fff6dc', { stroke: OUT, sw: 8 }));
+    w += G(at(x, y, R(p)), node + lab, `opacity="${R(dim)}"`);
+  });
+  w += txt(CX, CY - 10, 'द्वादश', 64, '#ffd23c', { sw: 12 }) + txt(CX, CY + 66, 'ज्योतिर्लिंग', 64, '#ffd23c', { sw: 12 });
+  return cam(960, 540, lerp(1.0, 1.04, prog(t, 96.5, 102.4)), w) + vignette(.3) + popRibbon(t, 99.2, 102.2, 1600, 250, 'सबसे विशेष', 70, 360);
 }
 // F10b — not a guest, but a householder
 function f10b(t) {
